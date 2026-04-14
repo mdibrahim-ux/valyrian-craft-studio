@@ -1,11 +1,12 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, Suspense } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getProductById, WOOD_TYPES, MATERIALS, FINISHES, THEME_PACKS } from '@/data/products';
 import { useCart, type CustomConfig } from '@/contexts/CartContext';
 import CustomizationPanel from '@/components/CustomizationPanel';
 import PreviewPanel from '@/components/PreviewPanel';
+import ProductViewer3D from '@/components/ProductViewer3D';
 import { Button } from '@/components/ui/button';
-import { ShoppingCart, ArrowLeft, Check } from 'lucide-react';
+import { ShoppingCart, ArrowLeft, Check, Box, Image } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 function calculatePrice(basePrice: number, config: CustomConfig, components: { id: string; priceModifier: number }[]): number {
@@ -19,18 +20,15 @@ function calculatePrice(basePrice: number, config: CustomConfig, components: { i
   price *= mat?.priceMultiplier ?? 1;
   price *= fin?.priceMultiplier ?? 1;
 
-  // Size modifier (relative to 100cm baseline)
   const sizeMultiplier = ((config.width + config.height + config.depth) / 3) / 100;
   price *= Math.max(0.7, Math.min(sizeMultiplier, 2.0));
 
-  // Components
   const compCost = components
     .filter(c => config.components.includes(c.id))
     .reduce((sum, c) => sum + c.priceModifier, 0);
   price += compCost;
 
   if (theme) price *= theme.priceMultiplier;
-
   return Math.round(price);
 }
 
@@ -54,6 +52,7 @@ const CustomizePage: React.FC = () => {
   });
 
   const [added, setAdded] = useState(false);
+  const [viewMode, setViewMode] = useState<'3d' | 'photo'>('3d');
 
   const price = useMemo(() => {
     if (!product) return 0;
@@ -101,7 +100,58 @@ const CustomizePage: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Left: Preview */}
           <div className="space-y-4">
-            <PreviewPanel image={product.image} productName={product.name} config={config} />
+            {/* View mode toggle */}
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setViewMode('3d')}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-all ${
+                  viewMode === '3d'
+                    ? 'bg-primary/10 text-primary border border-primary/30'
+                    : 'text-muted-foreground hover:text-foreground border border-border'
+                }`}
+              >
+                <Box size={14} /> 3D View
+              </button>
+              <button
+                onClick={() => setViewMode('photo')}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-all ${
+                  viewMode === 'photo'
+                    ? 'bg-primary/10 text-primary border border-primary/30'
+                    : 'text-muted-foreground hover:text-foreground border border-border'
+                }`}
+              >
+                <Image size={14} /> Photo
+              </button>
+              <span className="text-[10px] text-muted-foreground ml-2">
+                {viewMode === '3d' ? 'Drag to rotate · Scroll to zoom' : ''}
+              </span>
+            </div>
+
+            {viewMode === '3d' ? (
+              <Suspense fallback={
+                <div className="w-full aspect-[4/3] rounded-lg bg-secondary/20 border border-border/30 flex items-center justify-center">
+                  <div className="text-center">
+                    <Box size={32} className="mx-auto text-muted-foreground mb-2 animate-pulse" />
+                    <p className="text-xs text-muted-foreground">Loading 3D preview...</p>
+                  </div>
+                </div>
+              }>
+                <ProductViewer3D config={config} category={product.category} />
+              </Suspense>
+            ) : (
+              <PreviewPanel image={product.image} productName={product.name} config={config} />
+            )}
+
+            {/* Product name & dimensions below preview */}
+            {viewMode === '3d' && (
+              <div className="glass-card rounded-lg p-4">
+                <h2 className="font-heading text-xl font-bold text-foreground">{product.name}</h2>
+                <p className="text-xs text-muted-foreground mt-1">
+                  {config.width}cm × {config.height}cm × {config.depth}cm
+                </p>
+              </div>
+            )}
+
             <Button
               onClick={handleAddToCart}
               variant="premium"
