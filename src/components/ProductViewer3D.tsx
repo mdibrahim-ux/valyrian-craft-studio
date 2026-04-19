@@ -857,6 +857,1025 @@ function FurnitureModel({ config, category, subtype }: { config: CustomConfig; c
   );
 }
 
+// ═══════════════════════════════════════════════════════════════════════
+// SUBTYPE-SPECIFIC MODELS — high-detail variants per furniture kind
+// ═══════════════════════════════════════════════════════════════════════
+
+// ─── SOFA / SECTIONAL (long, multi-cushion) ──────────────────────────
+function SofaModel({ config }: { config: CustomConfig }) {
+  const w = Math.max(config.width / 100, 1.6); // sofa minimum width
+  const h = config.height / 100;
+  const d = config.depth / 100;
+  const woodMat = useWoodMaterial(config.woodType, config.finish, config.material);
+  const fabricMat = useFabricMaterial(config.style);
+  const seatH = h * 0.38;
+  const backH = h * 0.55;
+  const hasArmrest = config.components.includes('armrest') || true;
+  const hasHeadrest = config.components.includes('headrest');
+  const seatCount = w > 2.4 ? 3 : 2;
+
+  return (
+    <group position={[0, -h / 2, 0]}>
+      {/* Wooden base frame (just visible feet) */}
+      {[[-1, -1], [1, -1], [-1, 1], [1, 1]].map(([x, z], i) => (
+        <RoundedBox key={i} args={[0.05, 0.06, 0.05]} radius={0.008}
+          position={[x * (w / 2 - 0.08), 0.03, z * (d / 2 - 0.08)]}>
+          <meshStandardMaterial {...woodMat} />
+        </RoundedBox>
+      ))}
+      {/* Sofa body — main upholstered shell */}
+      <RoundedBox args={[w, seatH, d]} radius={0.08} smoothness={6} position={[0, seatH / 2 + 0.06, 0]}>
+        <meshStandardMaterial {...fabricMat} />
+      </RoundedBox>
+      {/* Seat cushions */}
+      {Array.from({ length: seatCount }).map((_, i) => {
+        const cushW = (w - (hasArmrest ? 0.4 : 0.1)) / seatCount - 0.02;
+        const startX = -w / 2 + (hasArmrest ? 0.22 : 0.06) + cushW / 2;
+        return (
+          <RoundedBox key={i} args={[cushW, 0.12, d * 0.7]} radius={0.05} smoothness={6}
+            position={[startX + i * (cushW + 0.02), seatH + 0.08, 0.02]}>
+            <meshStandardMaterial {...fabricMat} />
+          </RoundedBox>
+        );
+      })}
+      {/* Backrest — multi-pillow */}
+      {Array.from({ length: seatCount }).map((_, i) => {
+        const cushW = (w - (hasArmrest ? 0.4 : 0.1)) / seatCount - 0.02;
+        const startX = -w / 2 + (hasArmrest ? 0.22 : 0.06) + cushW / 2;
+        return (
+          <RoundedBox key={i} args={[cushW, backH, 0.18]} radius={0.06} smoothness={6}
+            position={[startX + i * (cushW + 0.02), seatH + backH / 2 + 0.06, -d / 2 + 0.14]}>
+            <meshStandardMaterial {...fabricMat} />
+          </RoundedBox>
+        );
+      })}
+      {/* Headrests */}
+      {hasHeadrest && Array.from({ length: seatCount }).map((_, i) => {
+        const cushW = (w - 0.4) / seatCount - 0.02;
+        const startX = -w / 2 + 0.22 + cushW / 2;
+        return (
+          <RoundedBox key={i} args={[cushW * 0.7, 0.16, 0.14]} radius={0.05} smoothness={6}
+            position={[startX + i * (cushW + 0.02), seatH + backH + 0.14, -d / 2 + 0.16]}>
+            <meshStandardMaterial {...fabricMat} />
+          </RoundedBox>
+        );
+      })}
+      {/* Armrests — chunky upholstered */}
+      {hasArmrest && [-1, 1].map(side => (
+        <RoundedBox key={side} args={[0.18, seatH + 0.18, d]} radius={0.06} smoothness={6}
+          position={[side * (w / 2 - 0.09), (seatH + 0.18) / 2 + 0.06, 0]}>
+          <meshStandardMaterial {...fabricMat} />
+        </RoundedBox>
+      ))}
+      {/* Decorative throw pillows */}
+      {[-0.3, 0.3].map((x, i) => (
+        <RoundedBox key={i} args={[0.22, 0.18, 0.08]} radius={0.04} smoothness={6}
+          position={[x * w * 0.7, seatH + 0.25, d * 0.1]}
+          rotation={[0.2, i === 0 ? 0.15 : -0.15, i === 0 ? 0.1 : -0.1]}>
+          <meshStandardMaterial color="#C8A45C" roughness={0.85} />
+        </RoundedBox>
+      ))}
+    </group>
+  );
+}
+
+// ─── RECLINER ────────────────────────────────────────────────────────
+function ReclinerModel({ config }: { config: CustomConfig }) {
+  const w = config.width / 100;
+  const h = config.height / 100;
+  const d = config.depth / 100;
+  const woodMat = useWoodMaterial(config.woodType, config.finish, config.material);
+  const fabricMat = useFabricMaterial(config.style);
+
+  return (
+    <group position={[0, -h / 2, 0]}>
+      {/* Pedestal swivel base */}
+      <mesh position={[0, 0.025, 0]}>
+        <cylinderGeometry args={[w * 0.35, w * 0.42, 0.05, 32]} />
+        <meshStandardMaterial color="#1a1a1a" metalness={0.7} roughness={0.3} />
+      </mesh>
+      <mesh position={[0, 0.08, 0]}>
+        <cylinderGeometry args={[0.04, 0.06, 0.06, 16]} />
+        <meshStandardMaterial color="#444" metalness={0.85} roughness={0.2} />
+      </mesh>
+      {/* Seat with thick padding */}
+      <RoundedBox args={[w * 0.85, 0.18, d * 0.85]} radius={0.06} smoothness={6}
+        position={[0, h * 0.32, d * 0.05]}>
+        <meshStandardMaterial {...fabricMat} />
+      </RoundedBox>
+      {/* Backrest — tall, segmented (tufted look via dowels) */}
+      <RoundedBox args={[w * 0.85, h * 0.55, 0.22]} radius={0.07} smoothness={6}
+        position={[0, h * 0.62, -d * 0.32]} rotation={[-0.08, 0, 0]}>
+        <meshStandardMaterial {...fabricMat} />
+      </RoundedBox>
+      {/* Tufting buttons */}
+      {[[-1, 1], [1, 1], [-1, 0], [1, 0], [-1, -1], [1, -1]].map(([x, y], i) => (
+        <mesh key={i} position={[x * w * 0.18, h * 0.62 + y * 0.12, -d * 0.32 + 0.115]}>
+          <sphereGeometry args={[0.012, 12, 12]} />
+          <meshStandardMaterial color="#B8860B" metalness={0.85} roughness={0.2} />
+        </mesh>
+      ))}
+      {/* Headrest */}
+      <RoundedBox args={[w * 0.7, 0.18, 0.18]} radius={0.07} smoothness={6}
+        position={[0, h * 0.95, -d * 0.3]} rotation={[-0.05, 0, 0]}>
+        <meshStandardMaterial {...fabricMat} />
+      </RoundedBox>
+      {/* Armrests — wide padded */}
+      {[-1, 1].map(side => (
+        <RoundedBox key={side} args={[0.14, 0.16, d * 0.95]} radius={0.05} smoothness={6}
+          position={[side * (w / 2 - 0.07), h * 0.45, 0]}>
+          <meshStandardMaterial {...fabricMat} />
+        </RoundedBox>
+      ))}
+      {/* Footrest extension */}
+      <RoundedBox args={[w * 0.7, 0.1, 0.4]} radius={0.04} smoothness={5}
+        position={[0, h * 0.28, d * 0.55]} rotation={[-0.4, 0, 0]}>
+        <meshStandardMaterial {...fabricMat} />
+      </RoundedBox>
+      {/* Side control panel */}
+      <RoundedBox args={[0.05, 0.04, 0.12]} radius={0.01}
+        position={[w / 2 - 0.04, h * 0.5, d * 0.15]}>
+        <meshStandardMaterial color="#222" metalness={0.6} roughness={0.4} />
+      </RoundedBox>
+    </group>
+  );
+}
+
+// ─── BENCH ───────────────────────────────────────────────────────────
+function BenchModel({ config }: { config: CustomConfig }) {
+  const w = Math.max(config.width / 100, 1.0);
+  const h = config.height / 100 * 0.5; // benches are low
+  const d = config.depth / 100 * 0.55;
+  const woodMat = useWoodMaterial(config.woodType, config.finish, config.material);
+  const fabricMat = useFabricMaterial(config.style);
+  const hasCushion = config.components.includes('cushion');
+
+  return (
+    <group position={[0, -h / 2, 0]}>
+      {/* Sturdy legs */}
+      {[[-1, -1], [1, -1], [-1, 1], [1, 1]].map(([x, z], i) => (
+        <group key={i} position={[x * (w / 2 - 0.08), 0, z * (d / 2 - 0.06)]}>
+          <RoundedBox args={[0.06, h, 0.06]} radius={0.008} position={[0, h / 2, 0]}>
+            <meshStandardMaterial {...woodMat} />
+          </RoundedBox>
+          <BrassAccent position={[0, 0.005, 0]} size={[0.07, 0.01, 0.07]} />
+        </group>
+      ))}
+      {/* Long stretcher */}
+      <mesh position={[0, h * 0.25, 0]} rotation={[0, 0, Math.PI / 2]}>
+        <cylinderGeometry args={[0.014, 0.014, w - 0.16, 12]} />
+        <meshStandardMaterial {...woodMat} />
+      </mesh>
+      {/* Seat slab */}
+      <RoundedBox args={[w, 0.06, d]} radius={0.015} smoothness={4} position={[0, h + 0.03, 0]}>
+        <meshStandardMaterial {...woodMat} />
+      </RoundedBox>
+      {/* Cushion */}
+      {hasCushion && (
+        <RoundedBox args={[w * 0.95, 0.08, d * 0.9]} radius={0.03} smoothness={5}
+          position={[0, h + 0.1, 0]}>
+          <meshStandardMaterial {...fabricMat} />
+        </RoundedBox>
+      )}
+    </group>
+  );
+}
+
+// ─── BAR STOOL ───────────────────────────────────────────────────────
+function BarStoolModel({ config }: { config: CustomConfig }) {
+  const w = config.width / 100 * 0.6;
+  const h = config.height / 100;
+  const woodMat = useWoodMaterial(config.woodType, config.finish, config.material);
+  const fabricMat = useFabricMaterial(config.style);
+  const hasCushion = config.components.includes('cushion');
+
+  return (
+    <group position={[0, -h / 2, 0]}>
+      {/* Base disc */}
+      <mesh position={[0, 0.015, 0]}>
+        <cylinderGeometry args={[w * 0.7, w * 0.8, 0.03, 32]} />
+        <meshStandardMaterial color="#1a1a1a" metalness={0.85} roughness={0.18} />
+      </mesh>
+      {/* Central pole */}
+      <mesh position={[0, h * 0.45, 0]}>
+        <cylinderGeometry args={[0.025, 0.03, h * 0.85, 16]} />
+        <meshStandardMaterial color="#888" metalness={0.92} roughness={0.12} envMapIntensity={1.5} />
+      </mesh>
+      {/* Footrest ring */}
+      <mesh position={[0, h * 0.25, 0]} rotation={[Math.PI / 2, 0, 0]}>
+        <torusGeometry args={[w * 0.5, 0.012, 12, 32]} />
+        <meshStandardMaterial color="#888" metalness={0.9} roughness={0.15} />
+      </mesh>
+      {/* Seat — round, contoured */}
+      <mesh position={[0, h * 0.92, 0]}>
+        <cylinderGeometry args={[w * 0.7, w * 0.7, 0.06, 32]} />
+        <meshStandardMaterial {...woodMat} />
+      </mesh>
+      {hasCushion && (
+        <mesh position={[0, h * 0.97, 0]}>
+          <cylinderGeometry args={[w * 0.65, w * 0.7, 0.05, 32]} />
+          <meshStandardMaterial {...fabricMat} />
+        </mesh>
+      )}
+      {/* Curved low backrest */}
+      <mesh position={[0, h * 1.05, -w * 0.55]} rotation={[0.2, 0, 0]}>
+        <torusGeometry args={[w * 0.5, 0.025, 12, 32, Math.PI]} />
+        <meshStandardMaterial {...woodMat} />
+      </mesh>
+    </group>
+  );
+}
+
+// ─── COFFEE TABLE ────────────────────────────────────────────────────
+function CoffeeTableModel({ config }: { config: CustomConfig }) {
+  const w = config.width / 100;
+  const h = config.height / 100 * 0.45; // low
+  const d = config.depth / 100;
+  const woodMat = useWoodMaterial(config.woodType, config.finish, config.material);
+  const hasGlassTop = config.components.includes('glass-top');
+
+  return (
+    <group position={[0, -h / 2, 0]}>
+      {/* Sculptural X-frame base */}
+      {[[-1, 1], [1, -1]].map(([sx, sz], i) => (
+        <mesh key={i} position={[0, h * 0.45, 0]}
+          rotation={[0, Math.atan2(sz, sx), 0]}>
+          <boxGeometry args={[Math.hypot(w, d) * 0.85, 0.04, 0.04]} />
+          <meshStandardMaterial {...woodMat} />
+        </mesh>
+      ))}
+      {/* Bottom cross feet */}
+      {[[-1, 0], [1, 0], [0, -1], [0, 1]].map(([x, z], i) => (
+        <RoundedBox key={i} args={[0.08, 0.025, 0.08]} radius={0.005}
+          position={[x * (w / 2 - 0.06), 0.012, z * (d / 2 - 0.06)]}>
+          <meshStandardMaterial {...woodMat} />
+        </RoundedBox>
+      ))}
+      {/* Lower shelf */}
+      <RoundedBox args={[w * 0.7, 0.025, d * 0.7]} radius={0.008}
+        position={[0, h * 0.25, 0]}>
+        <meshStandardMaterial {...woodMat} />
+      </RoundedBox>
+      {/* Top */}
+      <RoundedBox args={[w, 0.04, d]} radius={0.012} smoothness={4}
+        position={[0, h - 0.02, 0]}>
+        <meshStandardMaterial {...woodMat} />
+      </RoundedBox>
+      {hasGlassTop && (
+        <RoundedBox args={[w * 0.95, 0.012, d * 0.95]} radius={0.008}
+          position={[0, h + 0.008, 0]}>
+          <meshPhysicalMaterial color="#AADDEE" roughness={0.02} metalness={0.05}
+            transparent opacity={0.3} transmission={0.9} thickness={0.5} ior={1.5} />
+        </RoundedBox>
+      )}
+    </group>
+  );
+}
+
+// ─── SIDE TABLE (round, marble) ──────────────────────────────────────
+function SideTableModel({ config }: { config: CustomConfig }) {
+  const r = Math.min(config.width, config.depth) / 200;
+  const h = config.height / 100;
+  const woodMat = useWoodMaterial(config.woodType, config.finish, config.material);
+
+  return (
+    <group position={[0, -h / 2, 0]}>
+      {/* Tripod brass legs */}
+      {[0, 1, 2].map(i => {
+        const angle = (i / 3) * Math.PI * 2;
+        return (
+          <mesh key={i} position={[Math.cos(angle) * r * 0.6, h * 0.45, Math.sin(angle) * r * 0.6]}
+            rotation={[0, -angle, 0.08]}>
+            <cylinderGeometry args={[0.012, 0.014, h * 0.9, 12]} />
+            <meshStandardMaterial color="#B8860B" metalness={0.9} roughness={0.18} envMapIntensity={1.5} />
+          </mesh>
+        );
+      })}
+      {/* Bottom hub */}
+      <mesh position={[0, 0.015, 0]}>
+        <cylinderGeometry args={[0.04, 0.05, 0.025, 16]} />
+        <meshStandardMaterial color="#B8860B" metalness={0.9} roughness={0.15} />
+      </mesh>
+      {/* Marble round top */}
+      <mesh position={[0, h - 0.02, 0]}>
+        <cylinderGeometry args={[r, r, 0.04, 48]} />
+        <meshPhysicalMaterial color="#F5F1EA" roughness={0.15} metalness={0.05} clearcoat={0.6} clearcoatRoughness={0.2} />
+      </mesh>
+      {/* Marble veining (fake via emissive lines) */}
+      <mesh position={[0, h, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+        <ringGeometry args={[r * 0.3, r * 0.32, 48]} />
+        <meshBasicMaterial color="#A8A095" transparent opacity={0.3} side={THREE.DoubleSide} />
+      </mesh>
+    </group>
+  );
+}
+
+// ─── CONSOLE TABLE (long narrow with drawers) ────────────────────────
+function ConsoleTableModel({ config }: { config: CustomConfig }) {
+  const w = Math.max(config.width / 100, 1.2);
+  const h = config.height / 100;
+  const d = config.depth / 100 * 0.5; // narrow
+  const woodMat = useWoodMaterial(config.woodType, config.finish, config.material);
+  const hasDrawers = config.components.includes('drawers');
+
+  return (
+    <group position={[0, -h / 2, 0]}>
+      {[[-1, -1], [1, -1], [-1, 1], [1, 1]].map(([x, z], i) => (
+        <RoundedBox key={i} args={[0.04, h * 0.92, 0.04]} radius={0.008}
+          position={[x * (w / 2 - 0.04), h * 0.46, z * (d / 2 - 0.04)]}>
+          <meshStandardMaterial {...woodMat} />
+        </RoundedBox>
+      ))}
+      {/* Drawer row */}
+      {hasDrawers && Array.from({ length: 3 }).map((_, i) => (
+        <group key={i} position={[(-w / 2 + 0.1) + (i + 0.5) * ((w - 0.2) / 3), h * 0.7, d / 2 - 0.025]}>
+          <RoundedBox args={[(w - 0.2) / 3 - 0.02, 0.18, 0.04]} radius={0.005}>
+            <meshStandardMaterial {...woodMat} />
+          </RoundedBox>
+          <mesh position={[0, 0, 0.025]}>
+            <torusGeometry args={[0.018, 0.004, 8, 16]} />
+            <meshStandardMaterial color="#B8860B" metalness={0.9} roughness={0.15} />
+          </mesh>
+        </group>
+      ))}
+      {/* Lower shelf */}
+      <RoundedBox args={[w * 0.92, 0.025, d * 0.85]} radius={0.005}
+        position={[0, h * 0.3, 0]}>
+        <meshStandardMaterial {...woodMat} />
+      </RoundedBox>
+      {/* Top */}
+      <RoundedBox args={[w, 0.04, d]} radius={0.01} smoothness={4}
+        position={[0, h * 0.92 + 0.02, 0]}>
+        <meshStandardMaterial {...woodMat} />
+      </RoundedBox>
+    </group>
+  );
+}
+
+// ─── NESTING TABLES (3 stacked) ──────────────────────────────────────
+function NestingTablesModel({ config }: { config: CustomConfig }) {
+  const w = config.width / 100;
+  const h = config.height / 100 * 0.5;
+  const d = config.depth / 100;
+  const woodMat = useWoodMaterial(config.woodType, config.finish, config.material);
+
+  return (
+    <group position={[0, -h / 2, 0]}>
+      {[0, 1, 2].map(i => {
+        const scale = 1 - i * 0.18;
+        const offset = i * 0.12;
+        return (
+          <group key={i} position={[offset * w * 0.4, 0, offset * d * 0.3]}>
+            {/* 4 thin legs */}
+            {[[-1, -1], [1, -1], [-1, 1], [1, 1]].map(([x, z], j) => (
+              <mesh key={j} position={[x * (w * scale / 2 - 0.025), h * scale * 0.45, z * (d * scale / 2 - 0.025)]}>
+                <cylinderGeometry args={[0.015, 0.02, h * scale * 0.9, 12]} />
+                <meshStandardMaterial {...woodMat} />
+              </mesh>
+            ))}
+            {/* Top */}
+            <RoundedBox args={[w * scale, 0.025, d * scale]} radius={0.008}
+              position={[0, h * scale * 0.92, 0]}>
+              <meshStandardMaterial {...woodMat} />
+            </RoundedBox>
+          </group>
+        );
+      })}
+    </group>
+  );
+}
+
+// ─── NIGHTSTAND (small cabinet, 1-2 drawers) ─────────────────────────
+function NightstandModel({ config }: { config: CustomConfig }) {
+  const w = config.width / 100 * 0.55;
+  const h = config.height / 100 * 0.7;
+  const d = config.depth / 100 * 0.55;
+  const woodMat = useWoodMaterial(config.woodType, config.finish, config.material);
+
+  return (
+    <group position={[0, -h / 2, 0]}>
+      {/* Body */}
+      <RoundedBox args={[w, h, d]} radius={0.012} smoothness={4} position={[0, h / 2, 0]}>
+        <meshStandardMaterial {...woodMat} />
+      </RoundedBox>
+      {/* Top with overhang */}
+      <RoundedBox args={[w + 0.04, 0.025, d + 0.04]} radius={0.008}
+        position={[0, h + 0.012, 0]}>
+        <meshStandardMaterial {...woodMat} />
+      </RoundedBox>
+      {/* Two drawers */}
+      {[0, 1].map(i => (
+        <group key={i} position={[0, h * 0.3 + i * h * 0.4, d / 2 + 0.005]}>
+          <RoundedBox args={[w * 0.85, h * 0.32, 0.012]} radius={0.005}>
+            <meshStandardMaterial {...woodMat} />
+          </RoundedBox>
+          <mesh position={[0, 0, 0.012]}>
+            <torusGeometry args={[0.022, 0.005, 8, 16]} />
+            <meshStandardMaterial color="#B8860B" metalness={0.9} roughness={0.15} />
+          </mesh>
+        </group>
+      ))}
+      {/* Tapered legs */}
+      {[[-1, -1], [1, -1], [-1, 1], [1, 1]].map(([x, z], i) => (
+        <mesh key={i} position={[x * (w / 2 - 0.02), -0.04, z * (d / 2 - 0.02)]}>
+          <cylinderGeometry args={[0.012, 0.018, 0.08, 12]} />
+          <meshStandardMaterial {...woodMat} />
+        </mesh>
+      ))}
+    </group>
+  );
+}
+
+// ─── CANOPY BED (4-poster) ───────────────────────────────────────────
+function CanopyBedModel({ config }: { config: CustomConfig }) {
+  const w = config.width / 100;
+  const h = config.height / 100;
+  const d = config.depth / 100;
+  const woodMat = useWoodMaterial(config.woodType, config.finish, config.material);
+  const fabricMat = useFabricMaterial(config.style);
+  const frameH = h * 0.22;
+  const postH = h * 1.4;
+
+  return (
+    <group position={[0, -h / 2, 0]}>
+      {/* Frame rails */}
+      {[-1, 1].map(s => (
+        <RoundedBox key={s} args={[0.08, frameH, d]} radius={0.012}
+          position={[s * (w / 2 - 0.04), frameH / 2, 0]}>
+          <meshStandardMaterial {...woodMat} />
+        </RoundedBox>
+      ))}
+      {/* 4 tall posts */}
+      {[[-1, -1], [1, -1], [-1, 1], [1, 1]].map(([x, z], i) => (
+        <group key={i} position={[x * (w / 2 - 0.04), 0, z * (d / 2 - 0.04)]}>
+          <mesh position={[0, postH / 2, 0]}>
+            <cylinderGeometry args={[0.04, 0.05, postH, 16]} />
+            <meshStandardMaterial {...woodMat} />
+          </mesh>
+          {/* Decorative finial */}
+          <mesh position={[0, postH + 0.04, 0]}>
+            <sphereGeometry args={[0.04, 16, 16]} />
+            <meshStandardMaterial {...woodMat} />
+          </mesh>
+        </group>
+      ))}
+      {/* Canopy top frame */}
+      {[
+        { p: [0, postH, -d / 2 + 0.04] as [number, number, number], s: [w - 0.08, 0.04, 0.05] as [number, number, number] },
+        { p: [0, postH, d / 2 - 0.04] as [number, number, number], s: [w - 0.08, 0.04, 0.05] as [number, number, number] },
+        { p: [-w / 2 + 0.04, postH, 0] as [number, number, number], s: [0.05, 0.04, d - 0.08] as [number, number, number] },
+        { p: [w / 2 - 0.04, postH, 0] as [number, number, number], s: [0.05, 0.04, d - 0.08] as [number, number, number] },
+      ].map((rail, i) => (
+        <RoundedBox key={i} args={rail.s} radius={0.008} position={rail.p}>
+          <meshStandardMaterial {...woodMat} />
+        </RoundedBox>
+      ))}
+      {/* Draping fabric panels (corners) */}
+      {[[-1, -1], [1, -1], [-1, 1], [1, 1]].map(([x, z], i) => (
+        <mesh key={i} position={[x * (w / 2 - 0.05), postH * 0.55, z * (d / 2 - 0.05)]}>
+          <planeGeometry args={[0.08, postH * 0.85]} />
+          <meshStandardMaterial color="#3d2818" transparent opacity={0.7} side={THREE.DoubleSide} roughness={0.95} />
+        </mesh>
+      ))}
+      {/* Mattress */}
+      <RoundedBox args={[w * 0.92, 0.18, d * 0.9]} radius={0.05} smoothness={6}
+        position={[0, frameH + 0.09, 0]}>
+        <meshStandardMaterial color="#F8F4ED" roughness={0.98} />
+      </RoundedBox>
+      {/* Pillows */}
+      {[-0.25, 0.25].map((x, i) => (
+        <RoundedBox key={i} args={[w * 0.3, 0.1, 0.22]} radius={0.04} smoothness={6}
+          position={[x * w, frameH + 0.23, -d * 0.28]}>
+          <meshStandardMaterial color="#FFFFFF" roughness={0.96} />
+        </RoundedBox>
+      ))}
+    </group>
+  );
+}
+
+// ─── BOOKSHELF (tall, many shelves) ──────────────────────────────────
+function BookshelfModel({ config }: { config: CustomConfig }) {
+  const w = config.width / 100 * 0.8;
+  const h = Math.max(config.height / 100, 1.6);
+  const d = config.depth / 100 * 0.45;
+  const woodMat = useWoodMaterial(config.woodType, config.finish, config.material);
+  const panelT = 0.022;
+
+  return (
+    <group position={[0, -h / 2, 0]}>
+      {/* Sides */}
+      {[-1, 1].map(s => (
+        <RoundedBox key={s} args={[panelT, h, d]} radius={0.005}
+          position={[s * (w / 2 - panelT / 2), h / 2, 0]}>
+          <meshStandardMaterial {...woodMat} />
+        </RoundedBox>
+      ))}
+      {/* Back */}
+      <RoundedBox args={[w - panelT * 2, h, panelT * 0.5]} radius={0.003}
+        position={[0, h / 2, -d / 2 + panelT * 0.25]}>
+        <meshStandardMaterial {...woodMat} />
+      </RoundedBox>
+      {/* Top, bottom */}
+      <RoundedBox args={[w, panelT, d]} radius={0.005} position={[0, h - panelT / 2, 0]}>
+        <meshStandardMaterial {...woodMat} />
+      </RoundedBox>
+      <RoundedBox args={[w, panelT, d]} radius={0.005} position={[0, panelT / 2, 0]}>
+        <meshStandardMaterial {...woodMat} />
+      </RoundedBox>
+      {/* 5 shelves with books */}
+      {[0.2, 0.36, 0.52, 0.68, 0.84].map((frac, idx) => (
+        <group key={frac} position={[0, h * frac, 0]}>
+          <RoundedBox args={[w - panelT * 2, 0.018, d - 0.02]} radius={0.003}>
+            <meshStandardMaterial {...woodMat} />
+          </RoundedBox>
+          {/* Books — varied colors and heights */}
+          {Array.from({ length: 8 }).map((_, b) => {
+            const colors = ['#8B2500', '#1F3A5F', '#2D5016', '#5C2D0E', '#3D2818', '#4A4A4A', '#7B3F00', '#1a3a3a'];
+            const bookH = 0.1 + ((b + idx) % 4) * 0.025;
+            return (
+              <mesh key={b} position={[(-w / 2 + panelT + 0.04) + b * ((w - panelT * 2 - 0.08) / 8), bookH / 2 + 0.012, 0]}>
+                <boxGeometry args={[(w - panelT * 2 - 0.08) / 8 - 0.005, bookH, d * 0.7]} />
+                <meshStandardMaterial color={colors[(b + idx) % colors.length]} roughness={0.85} />
+              </mesh>
+            );
+          })}
+        </group>
+      ))}
+    </group>
+  );
+}
+
+// ─── TV UNIT (low, wide, with media compartments) ────────────────────
+function TVUnitModel({ config }: { config: CustomConfig }) {
+  const w = Math.max(config.width / 100, 1.4);
+  const h = config.height / 100 * 0.5;
+  const d = config.depth / 100 * 0.5;
+  const woodMat = useWoodMaterial(config.woodType, config.finish, config.material);
+  const hasLighting = config.components.includes('lighting');
+
+  return (
+    <group position={[0, -h / 2, 0]}>
+      {/* Body */}
+      <RoundedBox args={[w, h, d]} radius={0.01} smoothness={4} position={[0, h / 2, 0]}>
+        <meshStandardMaterial {...woodMat} />
+      </RoundedBox>
+      {/* Open shelves middle */}
+      <mesh position={[0, h * 0.5, d / 2 + 0.001]}>
+        <boxGeometry args={[w * 0.5, h * 0.6, 0.005]} />
+        <meshStandardMaterial color="#0a0a0a" roughness={0.9} />
+      </mesh>
+      {/* Side cabinet doors */}
+      {[-1, 1].map(side => (
+        <group key={side} position={[side * (w * 0.32), h / 2, d / 2 + 0.005]}>
+          <RoundedBox args={[w * 0.3, h * 0.85, 0.012]} radius={0.005}>
+            <meshStandardMaterial {...woodMat} />
+          </RoundedBox>
+          {/* Vertical handle bar */}
+          <RoundedBox args={[0.008, h * 0.35, 0.012]} radius={0.003}
+            position={[side * w * 0.12, 0, 0.012]}>
+            <meshStandardMaterial color="#B8860B" metalness={0.9} roughness={0.15} />
+          </RoundedBox>
+        </group>
+      ))}
+      {/* Top with overhang */}
+      <RoundedBox args={[w + 0.03, 0.025, d + 0.03]} radius={0.008}
+        position={[0, h + 0.012, 0]}>
+        <meshStandardMaterial {...woodMat} />
+      </RoundedBox>
+      {/* Short legs */}
+      {[[-1, -1], [1, -1], [-1, 1], [1, 1]].map(([x, z], i) => (
+        <mesh key={i} position={[x * (w / 2 - 0.06), -0.025, z * (d / 2 - 0.04)]}
+          rotation={[Math.PI, 0, x * 0.1]}>
+          <cylinderGeometry args={[0.012, 0.018, 0.05, 12]} />
+          <meshStandardMaterial {...woodMat} />
+        </mesh>
+      ))}
+      {/* Underglow */}
+      {hasLighting && (
+        <>
+          <mesh position={[0, 0.01, 0]}>
+            <boxGeometry args={[w * 0.9, 0.005, 0.005]} />
+            <meshStandardMaterial color="#C8A45C" emissive="#C8A45C" emissiveIntensity={2} />
+          </mesh>
+          <pointLight position={[0, 0.05, 0]} intensity={0.4} color="#C8A45C" distance={1.2} />
+        </>
+      )}
+    </group>
+  );
+}
+
+// ─── WARDROBE (tall triple-door) ─────────────────────────────────────
+function WardrobeModel({ config }: { config: CustomConfig }) {
+  const w = Math.max(config.width / 100, 1.6);
+  const h = Math.max(config.height / 100, 1.8);
+  const d = config.depth / 100 * 0.6;
+  const woodMat = useWoodMaterial(config.woodType, config.finish, config.material);
+  const hasMirror = config.components.includes('mirror');
+  const hasHandles = config.components.includes('handles');
+
+  return (
+    <group position={[0, -h / 2, 0]}>
+      {/* Main body */}
+      <RoundedBox args={[w, h, d]} radius={0.012} smoothness={4} position={[0, h / 2, 0]}>
+        <meshStandardMaterial {...woodMat} />
+      </RoundedBox>
+      {/* 3 doors */}
+      {[-1, 0, 1].map(idx => (
+        <group key={idx} position={[idx * (w / 3), h / 2, d / 2 + 0.005]}>
+          <RoundedBox args={[w / 3 - 0.015, h - 0.04, 0.015]} radius={0.005}>
+            {idx === 0 && hasMirror ? (
+              <meshPhysicalMaterial color="#E8E8EE" metalness={0.95} roughness={0.05} envMapIntensity={2} />
+            ) : (
+              <meshStandardMaterial {...woodMat} />
+            )}
+          </RoundedBox>
+          {/* Long vertical handle */}
+          {hasHandles && (
+            <RoundedBox args={[0.012, h * 0.5, 0.018]} radius={0.005}
+              position={[(idx === 1 ? w * 0.12 : (idx === -1 ? w * 0.12 : -w * 0.12)), 0, 0.018]}>
+              <meshStandardMaterial color="#B8860B" metalness={0.92} roughness={0.12} envMapIntensity={1.5} />
+            </RoundedBox>
+          )}
+          {/* Inset panel detail */}
+          {!(idx === 0 && hasMirror) && (
+            <RoundedBox args={[w / 3 - 0.08, h * 0.85, 0.005]} radius={0.005}
+              position={[0, 0, 0.012]}>
+              <meshStandardMaterial {...woodMat} />
+            </RoundedBox>
+          )}
+        </group>
+      ))}
+      {/* Crown moulding */}
+      <RoundedBox args={[w + 0.04, 0.04, d + 0.04]} radius={0.01}
+        position={[0, h + 0.02, 0]}>
+        <meshStandardMaterial {...woodMat} />
+      </RoundedBox>
+      {/* Base plinth */}
+      <RoundedBox args={[w + 0.02, 0.06, d + 0.02]} radius={0.008}
+        position={[0, 0.03, 0]}>
+        <meshStandardMaterial {...woodMat} />
+      </RoundedBox>
+    </group>
+  );
+}
+
+// ─── WINE CABINET (glass front, racks) ───────────────────────────────
+function WineCabinetModel({ config }: { config: CustomConfig }) {
+  const w = config.width / 100;
+  const h = config.height / 100;
+  const d = config.depth / 100 * 0.55;
+  const woodMat = useWoodMaterial(config.woodType, config.finish, config.material);
+
+  return (
+    <group position={[0, -h / 2, 0]}>
+      {/* Body */}
+      <RoundedBox args={[w, h, d]} radius={0.012} smoothness={4} position={[0, h / 2, 0]}>
+        <meshStandardMaterial {...woodMat} />
+      </RoundedBox>
+      {/* Glass front door */}
+      <mesh position={[0, h / 2, d / 2 + 0.005]}>
+        <boxGeometry args={[w * 0.85, h * 0.8, 0.008]} />
+        <meshPhysicalMaterial color="#1a2a3a" roughness={0.05} metalness={0.1}
+          transparent opacity={0.4} transmission={0.7} thickness={0.3} ior={1.5} />
+      </mesh>
+      {/* Glass frame */}
+      {[-1, 1].map(s => (
+        <RoundedBox key={`v${s}`} args={[0.025, h * 0.85, 0.015]} radius={0.003}
+          position={[s * (w * 0.43), h / 2, d / 2 + 0.005]}>
+          <meshStandardMaterial {...woodMat} />
+        </RoundedBox>
+      ))}
+      {/* Wine bottle racks visible */}
+      {[0.25, 0.42, 0.58, 0.75].map((frac, row) => (
+        <group key={frac} position={[0, h * frac, 0]}>
+          {Array.from({ length: 6 }).map((_, b) => {
+            const x = (-w * 0.35) + b * (w * 0.7 / 5);
+            return (
+              <mesh key={b} position={[x, 0, 0]} rotation={[Math.PI / 2, 0, 0]}>
+                <cylinderGeometry args={[0.03, 0.03, 0.18, 12]} />
+                <meshStandardMaterial color={row % 2 ? '#2a4a1a' : '#3a1a1a'} roughness={0.4} metalness={0.1} />
+              </mesh>
+            );
+          })}
+        </group>
+      ))}
+      {/* Internal warm light */}
+      <pointLight position={[0, h * 0.5, d * 0.2]} intensity={0.5} color="#FFC97A" distance={1.2} />
+      {/* Top moulding */}
+      <RoundedBox args={[w + 0.02, 0.025, d + 0.02]} radius={0.008}
+        position={[0, h + 0.012, 0]}>
+        <meshStandardMaterial {...woodMat} />
+      </RoundedBox>
+    </group>
+  );
+}
+
+// ─── DRESSER (6 drawers in a 3x2 grid) ───────────────────────────────
+function DresserModel({ config }: { config: CustomConfig }) {
+  const w = Math.max(config.width / 100, 1.2);
+  const h = config.height / 100 * 0.7;
+  const d = config.depth / 100 * 0.5;
+  const woodMat = useWoodMaterial(config.woodType, config.finish, config.material);
+
+  return (
+    <group position={[0, -h / 2, 0]}>
+      <RoundedBox args={[w, h, d]} radius={0.012} smoothness={4} position={[0, h / 2, 0]}>
+        <meshStandardMaterial {...woodMat} />
+      </RoundedBox>
+      {/* Drawer grid 3x2 */}
+      {[0, 1, 2].map(row =>
+        [-1, 1].map(col => (
+          <group key={`${row}-${col}`} position={[col * w * 0.245, h * 0.18 + row * h * 0.27, d / 2 + 0.005]}>
+            <RoundedBox args={[w * 0.45, h * 0.22, 0.012]} radius={0.005}>
+              <meshStandardMaterial {...woodMat} />
+            </RoundedBox>
+            {/* Two knobs per drawer */}
+            {[-1, 1].map(k => (
+              <mesh key={k} position={[k * w * 0.1, 0, 0.013]}>
+                <sphereGeometry args={[0.02, 16, 16]} />
+                <meshStandardMaterial color="#B8860B" metalness={0.92} roughness={0.12} envMapIntensity={1.5} />
+              </mesh>
+            ))}
+          </group>
+        ))
+      )}
+      {/* Top with overhang */}
+      <RoundedBox args={[w + 0.04, 0.03, d + 0.04]} radius={0.008}
+        position={[0, h + 0.015, 0]}>
+        <meshStandardMaterial {...woodMat} />
+      </RoundedBox>
+      {/* Splayed legs */}
+      {[[-1, -1], [1, -1], [-1, 1], [1, 1]].map(([x, z], i) => (
+        <mesh key={i} position={[x * (w / 2 - 0.05), -0.05, z * (d / 2 - 0.04)]}
+          rotation={[0, 0, x * 0.12]}>
+          <cylinderGeometry args={[0.014, 0.022, 0.1, 12]} />
+          <meshStandardMaterial {...woodMat} />
+        </mesh>
+      ))}
+    </group>
+  );
+}
+
+// ─── ERGONOMIC OFFICE CHAIR (5-star base, mesh back) ─────────────────
+function ErgonomicChairModel({ config }: { config: CustomConfig }) {
+  const w = config.width / 100;
+  const h = config.height / 100;
+  const fabricMat = useFabricMaterial(config.style);
+
+  return (
+    <group position={[0, -h / 2, 0]}>
+      {/* 5-star base with casters */}
+      {[0, 1, 2, 3, 4].map(i => {
+        const angle = (i / 5) * Math.PI * 2;
+        return (
+          <group key={i} rotation={[0, angle, 0]}>
+            <mesh position={[w * 0.28, 0.04, 0]} rotation={[0, 0, 0.1]}>
+              <boxGeometry args={[w * 0.4, 0.025, 0.04]} />
+              <meshStandardMaterial color="#222" metalness={0.7} roughness={0.3} />
+            </mesh>
+            {/* Caster wheel */}
+            <mesh position={[w * 0.45, 0.025, 0]}>
+              <sphereGeometry args={[0.025, 16, 16]} />
+              <meshStandardMaterial color="#111" roughness={0.5} metalness={0.3} />
+            </mesh>
+          </group>
+        );
+      })}
+      {/* Gas-lift cylinder */}
+      <mesh position={[0, h * 0.3, 0]}>
+        <cylinderGeometry args={[0.025, 0.03, h * 0.5, 16]} />
+        <meshStandardMaterial color="#888" metalness={0.9} roughness={0.15} />
+      </mesh>
+      {/* Seat — contoured */}
+      <RoundedBox args={[w * 0.55, 0.08, w * 0.55]} radius={0.04} smoothness={6}
+        position={[0, h * 0.55, 0]}>
+        <meshStandardMaterial {...fabricMat} />
+      </RoundedBox>
+      {/* Mesh backrest */}
+      <RoundedBox args={[w * 0.5, h * 0.45, 0.05]} radius={0.04} smoothness={6}
+        position={[0, h * 0.82, -w * 0.2]} rotation={[-0.1, 0, 0]}>
+        <meshStandardMaterial color="#1a1a1a" roughness={0.85} metalness={0.05} />
+      </RoundedBox>
+      {/* Mesh holes (visual lattice) */}
+      {Array.from({ length: 6 }).map((_, r) =>
+        Array.from({ length: 4 }).map((_, c) => (
+          <mesh key={`${r}-${c}`} position={[(c - 1.5) * 0.07, h * 0.7 + r * 0.06, -w * 0.18]}>
+            <ringGeometry args={[0.012, 0.018, 16]} />
+            <meshBasicMaterial color="#000" transparent opacity={0.4} side={THREE.DoubleSide} />
+          </mesh>
+        ))
+      )}
+      {/* Headrest */}
+      <RoundedBox args={[w * 0.35, 0.1, 0.06]} radius={0.03}
+        position={[0, h * 1.1, -w * 0.18]}>
+        <meshStandardMaterial color="#1a1a1a" roughness={0.85} />
+      </RoundedBox>
+      {/* Armrests */}
+      {[-1, 1].map(side => (
+        <group key={side}>
+          <mesh position={[side * w * 0.32, h * 0.6, 0.02]}>
+            <cylinderGeometry args={[0.018, 0.022, 0.18, 12]} />
+            <meshStandardMaterial color="#222" metalness={0.7} roughness={0.3} />
+          </mesh>
+          <RoundedBox args={[0.05, 0.025, 0.18]} radius={0.012}
+            position={[side * w * 0.32, h * 0.7, 0.02]}>
+            <meshStandardMaterial color="#1a1a1a" roughness={0.8} />
+          </RoundedBox>
+        </group>
+      ))}
+    </group>
+  );
+}
+
+// ─── STANDING DESK (motorized, 2 column legs) ────────────────────────
+function StandingDeskModel({ config }: { config: CustomConfig }) {
+  const w = Math.max(config.width / 100, 1.2);
+  const h = config.height / 100;
+  const d = config.depth / 100;
+  const woodMat = useWoodMaterial(config.woodType, config.finish, config.material);
+
+  return (
+    <group position={[0, -h / 2, 0]}>
+      {/* Two telescoping column legs */}
+      {[-1, 1].map(side => (
+        <group key={side} position={[side * (w / 2 - 0.15), 0, 0]}>
+          {/* Foot */}
+          <RoundedBox args={[0.08, 0.03, d * 0.85]} radius={0.005}
+            position={[0, 0.015, 0]}>
+            <meshStandardMaterial color="#1a1a1a" metalness={0.7} roughness={0.3} />
+          </RoundedBox>
+          {/* Lower column (wider) */}
+          <RoundedBox args={[0.07, h * 0.5, 0.07]} radius={0.005}
+            position={[0, h * 0.27, 0]}>
+            <meshStandardMaterial color="#2a2a2a" metalness={0.75} roughness={0.25} />
+          </RoundedBox>
+          {/* Upper column (narrower, telescoping) */}
+          <RoundedBox args={[0.055, h * 0.45, 0.055]} radius={0.004}
+            position={[0, h * 0.72, 0]}>
+            <meshStandardMaterial color="#3a3a3a" metalness={0.8} roughness={0.22} />
+          </RoundedBox>
+        </group>
+      ))}
+      {/* Cross brace */}
+      <mesh position={[0, h * 0.92, 0]}>
+        <boxGeometry args={[w - 0.3, 0.015, 0.04]} />
+        <meshStandardMaterial color="#222" metalness={0.7} roughness={0.3} />
+      </mesh>
+      {/* Desktop */}
+      <RoundedBox args={[w, 0.035, d]} radius={0.008} smoothness={4}
+        position={[0, h * 0.95 + 0.018, 0]}>
+        <meshStandardMaterial {...woodMat} />
+      </RoundedBox>
+      {/* Control panel */}
+      <RoundedBox args={[0.12, 0.025, 0.05]} radius={0.005}
+        position={[w / 2 - 0.1, h * 0.92, d / 2 - 0.04]}>
+        <meshStandardMaterial color="#0a0a0a" roughness={0.4} metalness={0.5} />
+      </RoundedBox>
+      {/* Display LED */}
+      <mesh position={[w / 2 - 0.1, h * 0.93, d / 2 - 0.014]}>
+        <planeGeometry args={[0.08, 0.015]} />
+        <meshBasicMaterial color="#00FF88" />
+      </mesh>
+    </group>
+  );
+}
+
+// ─── FILING CABINET (4 lateral drawers) ──────────────────────────────
+function FilingCabinetModel({ config }: { config: CustomConfig }) {
+  const w = config.width / 100 * 0.7;
+  const h = config.height / 100;
+  const d = config.depth / 100 * 0.55;
+  const woodMat = useWoodMaterial(config.woodType, config.finish, config.material);
+
+  return (
+    <group position={[0, -h / 2, 0]}>
+      <RoundedBox args={[w, h, d]} radius={0.008} smoothness={4} position={[0, h / 2, 0]}>
+        <meshStandardMaterial color="#3a3a3a" metalness={0.6} roughness={0.4} />
+      </RoundedBox>
+      {/* 4 drawers */}
+      {[0, 1, 2, 3].map(i => (
+        <group key={i} position={[0, h * 0.12 + i * h * 0.235, d / 2 + 0.005]}>
+          <RoundedBox args={[w * 0.92, h * 0.2, 0.012]} radius={0.004}>
+            <meshStandardMaterial color="#4a4a4a" metalness={0.65} roughness={0.35} />
+          </RoundedBox>
+          {/* Pull handle */}
+          <RoundedBox args={[w * 0.3, 0.025, 0.018]} radius={0.005}
+            position={[0, -h * 0.06, 0.015]}>
+            <meshStandardMaterial color="#888" metalness={0.9} roughness={0.15} />
+          </RoundedBox>
+          {/* Label slot */}
+          <mesh position={[0, h * 0.05, 0.013]}>
+            <planeGeometry args={[w * 0.25, 0.025]} />
+            <meshStandardMaterial color="#fff" roughness={0.8} />
+          </mesh>
+          {/* Lock */}
+          {i === 0 && (
+            <mesh position={[w * 0.4, 0.015, 0.013]}>
+              <cylinderGeometry args={[0.012, 0.012, 0.008, 16]} rotation={[Math.PI / 2, 0, 0]} />
+              <meshStandardMaterial color="#B8860B" metalness={0.9} roughness={0.15} />
+            </mesh>
+          )}
+        </group>
+      ))}
+      {/* Top */}
+      <RoundedBox args={[w + 0.01, 0.012, d + 0.01]} radius={0.003}
+        position={[0, h + 0.006, 0]}>
+        <meshStandardMaterial color="#2a2a2a" metalness={0.65} roughness={0.35} />
+      </RoundedBox>
+    </group>
+  );
+}
+
+// ─── CONFERENCE TABLE (long, oval-ish) ───────────────────────────────
+function ConferenceTableModel({ config }: { config: CustomConfig }) {
+  const w = Math.max(config.width / 100, 2.5);
+  const h = config.height / 100;
+  const d = Math.max(config.depth / 100, 1.0);
+  const woodMat = useWoodMaterial(config.woodType, config.finish, config.material);
+  const hasCableMgmt = config.components.includes('cable-mgmt');
+
+  return (
+    <group position={[0, -h / 2, 0]}>
+      {/* Two pedestal bases */}
+      {[-1, 1].map(side => (
+        <group key={side} position={[side * (w * 0.32), 0, 0]}>
+          {/* Wide foot */}
+          <RoundedBox args={[0.5, 0.04, d * 0.7]} radius={0.01}
+            position={[0, 0.02, 0]}>
+            <meshStandardMaterial {...woodMat} />
+          </RoundedBox>
+          {/* Pedestal column */}
+          <RoundedBox args={[0.18, h * 0.85, d * 0.4]} radius={0.015}
+            position={[0, h * 0.45, 0]}>
+            <meshStandardMaterial {...woodMat} />
+          </RoundedBox>
+          {/* Brass cap */}
+          <BrassAccent position={[0, 0.005, 0]} size={[0.52, 0.012, d * 0.72]} />
+        </group>
+      ))}
+      {/* Oval-ish top (rounded rectangle) */}
+      <RoundedBox args={[w, 0.05, d]} radius={Math.min(0.3, d * 0.35)} smoothness={8}
+        position={[0, h * 0.9 + 0.025, 0]}>
+        <meshStandardMaterial {...woodMat} />
+      </RoundedBox>
+      {/* Cable grommets */}
+      {hasCableMgmt && [-2, -1, 0, 1, 2].map(i => (
+        <mesh key={i} position={[i * (w / 6), h * 0.92 + 0.026, 0]}>
+          <cylinderGeometry args={[0.04, 0.04, 0.015, 16]} />
+          <meshStandardMaterial color="#1a1a1a" metalness={0.8} roughness={0.2} />
+        </mesh>
+      ))}
+    </group>
+  );
+}
+
+// ─── CREDENZA (long low storage with 4 doors) ────────────────────────
+function CredenzaModel({ config }: { config: CustomConfig }) {
+  const w = Math.max(config.width / 100, 1.8);
+  const h = config.height / 100 * 0.6;
+  const d = config.depth / 100 * 0.5;
+  const woodMat = useWoodMaterial(config.woodType, config.finish, config.material);
+
+  return (
+    <group position={[0, -h / 2, 0]}>
+      <RoundedBox args={[w, h, d]} radius={0.012} smoothness={4} position={[0, h / 2, 0]}>
+        <meshStandardMaterial {...woodMat} />
+      </RoundedBox>
+      {/* 4 doors */}
+      {[-1.5, -0.5, 0.5, 1.5].map(idx => (
+        <group key={idx} position={[idx * (w / 4), h / 2, d / 2 + 0.005]}>
+          <RoundedBox args={[w / 4 - 0.02, h - 0.04, 0.012]} radius={0.005}>
+            <meshStandardMaterial {...woodMat} />
+          </RoundedBox>
+          {/* Inset square */}
+          <RoundedBox args={[w / 4 - 0.1, h * 0.7, 0.005]} radius={0.005}
+            position={[0, 0, 0.012]}>
+            <meshStandardMaterial {...woodMat} />
+          </RoundedBox>
+          {/* Knob */}
+          <mesh position={[0, h * 0.3, 0.018]}>
+            <sphereGeometry args={[0.018, 16, 16]} />
+            <meshStandardMaterial color="#B8860B" metalness={0.9} roughness={0.15} />
+          </mesh>
+        </group>
+      ))}
+      {/* Splayed mid-century legs */}
+      {[[-1, -1], [1, -1], [-1, 1], [1, 1]].map(([x, z], i) => (
+        <mesh key={i} position={[x * (w / 2 - 0.08), -0.06, z * (d / 2 - 0.04)]}
+          rotation={[0, 0, x * 0.18]}>
+          <cylinderGeometry args={[0.012, 0.022, 0.12, 12]} />
+          <meshStandardMaterial {...woodMat} />
+        </mesh>
+      ))}
+      {/* Top */}
+      <RoundedBox args={[w + 0.02, 0.025, d + 0.02]} radius={0.008}
+        position={[0, h + 0.012, 0]}>
+        <meshStandardMaterial {...woodMat} />
+      </RoundedBox>
+    </group>
+  );
+}
+
 // ─── Ground plane ────────────────────────────────────────────────────
 function GroundPlane() {
   return (
