@@ -807,7 +807,7 @@ function GenericModel({ config }: { config: CustomConfig }) {
 }
 
 // ─── SCENE WRAPPER ───────────────────────────────────────────────────
-function FurnitureModel({ config, category }: { config: CustomConfig; category: Category }) {
+function FurnitureModel({ config, category, subtype }: { config: CustomConfig; category: Category; subtype?: string }) {
   const groupRef = useRef<THREE.Group>(null);
 
   useFrame((_, delta) => {
@@ -817,6 +817,30 @@ function FurnitureModel({ config, category }: { config: CustomConfig; category: 
   });
 
   const ModelComponent = useMemo(() => {
+    // Subtype-specific overrides
+    switch (subtype) {
+      case 'sofa':
+      case 'sectional': return SofaModel;
+      case 'recliner': return ReclinerModel;
+      case 'bench': return BenchModel;
+      case 'stool': return BarStoolModel;
+      case 'coffee': return CoffeeTableModel;
+      case 'side': return SideTableModel;
+      case 'console': return ConsoleTableModel;
+      case 'nesting': return NestingTablesModel;
+      case 'nightstand': return NightstandModel;
+      case 'canopy': return CanopyBedModel;
+      case 'bookshelf': return BookshelfModel;
+      case 'tv-unit': return TVUnitModel;
+      case 'wardrobe': return WardrobeModel;
+      case 'wine': return WineCabinetModel;
+      case 'dresser': return DresserModel;
+      case 'ergonomic': return ErgonomicChairModel;
+      case 'standing': return StandingDeskModel;
+      case 'filing': return FilingCabinetModel;
+      case 'conference': return ConferenceTableModel;
+      case 'credenza': return CredenzaModel;
+    }
     switch (category) {
       case 'seating': return ChairModel;
       case 'tables': return TableModel;
@@ -824,7 +848,7 @@ function FurnitureModel({ config, category }: { config: CustomConfig; category: 
       case 'storage': return StorageModel;
       default: return GenericModel;
     }
-  }, [category]);
+  }, [category, subtype]);
 
   return (
     <group ref={groupRef}>
@@ -846,9 +870,10 @@ function GroundPlane() {
 interface Props {
   config: CustomConfig;
   category: Category;
+  subtype?: string;
 }
 
-const ProductViewer3D: React.FC<Props> = ({ config, category }) => {
+const ProductViewer3D: React.FC<Props> = ({ config, category, subtype }) => {
   return (
     <div className="w-full aspect-[4/3] rounded-lg overflow-hidden bg-secondary/20 border border-border/30">
       <Canvas
@@ -865,7 +890,7 @@ const ProductViewer3D: React.FC<Props> = ({ config, category }) => {
         <directionalLight position={[-3, 5, -3]} intensity={0.35} color="#FFE8C8" />
         <spotLight position={[0, 5, 0]} intensity={0.5} angle={0.6} penumbra={0.8} color="#FFF5E0" />
 
-        <FurnitureModel config={config} category={category} />
+        <FurnitureModel config={config} category={category} subtype={subtype} />
         <GroundPlane />
 
         <ContactShadows position={[0, -0.51, 0]} opacity={0.5} scale={5} blur={2.5} far={2} />
