@@ -2,11 +2,13 @@ import React from 'react';
 import { useCart } from '@/contexts/CartContext';
 import { Button } from '@/components/ui/button';
 import { Trash2, Plus, Minus, ShoppingCart, ArrowLeft } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { STYLES, WOOD_TYPES, MATERIALS, FINISHES } from '@/data/products';
+import { formatINR } from '@/lib/currency';
 
 const CartPage: React.FC = () => {
   const { items, removeItem, updateQuantity, total, clearCart } = useCart();
+  const navigate = useNavigate();
 
   if (items.length === 0) {
     return (
@@ -58,7 +60,7 @@ const CartPage: React.FC = () => {
                   <button onClick={() => removeItem(item.id)} className="text-muted-foreground hover:text-destructive transition-colors">
                     <Trash2 size={16} />
                   </button>
-                  <p className="text-primary font-semibold">${(item.price * item.quantity).toLocaleString()}</p>
+                  <p className="text-primary font-semibold">{formatINR(item.price * item.quantity)}</p>
                 </div>
               </div>
             );
@@ -69,17 +71,21 @@ const CartPage: React.FC = () => {
         <div className="glass-card rounded-lg p-6">
           <div className="flex justify-between items-center mb-4">
             <span className="text-muted-foreground">Subtotal</span>
-            <span className="text-foreground font-semibold">${total.toLocaleString()}</span>
+            <span className="text-foreground font-semibold">{formatINR(total)}</span>
           </div>
           <div className="flex justify-between items-center mb-4">
             <span className="text-muted-foreground">Shipping</span>
             <span className="text-primary text-sm">Free</span>
           </div>
+          <div className="flex justify-between items-center mb-4">
+            <span className="text-muted-foreground">GST (18%)</span>
+            <span className="text-foreground text-sm">{formatINR(total * 0.18)}</span>
+          </div>
           <div className="border-t border-border pt-4 flex justify-between items-center mb-6">
             <span className="text-foreground font-semibold">Total</span>
-            <span className="text-2xl font-bold text-gradient-gold">${total.toLocaleString()}</span>
+            <span className="text-2xl font-bold text-gradient-gold">{formatINR(total * 1.18)}</span>
           </div>
-          <Button variant="premium" size="lg" className="w-full">
+          <Button variant="premium" size="lg" className="w-full" onClick={() => navigate('/checkout')}>
             Proceed to Checkout
           </Button>
           <button onClick={clearCart} className="w-full text-center text-xs text-muted-foreground mt-3 hover:text-foreground transition-colors">

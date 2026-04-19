@@ -4,6 +4,7 @@ import {
   type Product, type ProductComponent,
 } from '@/data/products';
 import type { CustomConfig } from '@/contexts/CartContext';
+import { formatINR } from '@/lib/currency';
 
 interface Props {
   product: Product;
@@ -89,7 +90,7 @@ const CustomizationPanel: React.FC<Props> = ({ product, config, onChange, price 
         <h2 className="font-heading text-xl font-bold text-foreground">Customize</h2>
         <div className="text-right">
           <p className="text-xs text-muted-foreground">Total Price</p>
-          <p className="text-2xl font-bold text-gradient-gold">${price.toLocaleString()}</p>
+          <p className="text-2xl font-bold text-gradient-gold">{formatINR(price)}</p>
         </div>
       </div>
 
@@ -141,7 +142,7 @@ const CustomizationPanel: React.FC<Props> = ({ product, config, onChange, price 
                 <span className="text-sm text-foreground">{comp.name}</span>
               </div>
               {comp.priceModifier > 0 && (
-                <span className="text-xs text-primary">+${comp.priceModifier}</span>
+                <span className="text-xs text-primary">+{formatINR(comp.priceModifier)}</span>
               )}
             </label>
           ))}

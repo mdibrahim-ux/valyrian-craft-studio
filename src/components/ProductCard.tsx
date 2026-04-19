@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Product } from '@/data/products';
+import { formatINR } from '@/lib/currency';
 
 const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
   return (
@@ -29,7 +30,7 @@ const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
         <p className="text-sm text-muted-foreground mt-1 line-clamp-2">{product.description}</p>
         <div className="flex items-center justify-between mt-3">
           <span className="text-primary font-semibold">
-            From ${product.basePrice.toLocaleString()}
+            From {formatINR(product.basePrice)}
           </span>
           <span className="text-xs text-muted-foreground bg-secondary px-2 py-1 rounded">
             Customize →
