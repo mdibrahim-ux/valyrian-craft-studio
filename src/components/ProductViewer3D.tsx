@@ -1770,8 +1770,8 @@ function FilingCabinetModel({ config }: { config: CustomConfig }) {
           </mesh>
           {/* Lock */}
           {i === 0 && (
-            <mesh position={[w * 0.4, 0.015, 0.013]}>
-              <cylinderGeometry args={[0.012, 0.012, 0.008, 16]} rotation={[Math.PI / 2, 0, 0]} />
+            <mesh position={[w * 0.4, 0.015, 0.013]} rotation={[Math.PI / 2, 0, 0]}>
+              <cylinderGeometry args={[0.012, 0.012, 0.008, 16]} />
               <meshStandardMaterial color="#B8860B" metalness={0.9} roughness={0.15} />
             </mesh>
           )}
