@@ -60,6 +60,9 @@ const CustomizePage: React.FC = () => {
     return calculatePrice(product.basePrice, config, product.components);
   }, [product, config]);
 
+  // Determine subtype from product tags (skip the style tag — first tag is style)
+  const subtype = useMemo(() => product?.tags[1], [product]);
+
   if (!product) {
     return (
       <div className="min-h-screen pt-20 flex items-center justify-center">
@@ -137,7 +140,7 @@ const CustomizePage: React.FC = () => {
                   </div>
                 </div>
               }>
-                <ProductViewer3D config={config} category={product.category} />
+                <ProductViewer3D config={config} category={product.category} subtype={subtype} />
               </Suspense>
             ) : (
               <PreviewPanel image={product.image} productName={product.name} config={config} />
