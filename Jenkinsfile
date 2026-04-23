@@ -1,30 +1,48 @@
 pipeline {
     agent any
 
+    environment {
+        IMAGE_NAME = "devops-demo"
+        CONTAINER_NAME = "devops-container"
+        PORT = "80"
+    }
+
     stages {
 
-        stage('Clone Code') {
+        stage('Checkout Code') {
             steps {
-                git 'https://github.com/mdibrahim-ux/valyrian-craft-studio.git'
+                git branch: 'main', url: 'https://github.com/mdibrahim-ux/valyrian-craft-studio.git'
             }
         }
 
         stage('Build Docker Image') {
             steps {
-                sh 'docker build -t devops-demo:v1 .'
+                sh 'docker build -t $IMAGE_NAME:v1 .'
             }
         }
 
-        stage('Remove Old Container') {
+        stage('Stop & Remove Old Container') {
             steps {
-                sh 'docker rm -f devops-container || true'
+                sh '''
+                docker stop $CONTAINER_NAME || true
+                docker rm $CONTAINER_NAME || true
+                '''
             }
         }
 
-        stage('Run Container') {
+        stage('Run New Container') {
             steps {
-                sh 'docker run -d -p 80:8080 --name devops-container devops-demo:v1'
+                sh 'docker run -d -p $PORT:8080 --name $CONTAINER_NAME $IMAGE_NAME:v1'
             }
+        }
+    }
+
+    post {
+        success {
+            echo "✅ Deployment Successful!"
+        }
+        failure {
+            echo "❌ Deployment Failed!"
         }
     }
 }
