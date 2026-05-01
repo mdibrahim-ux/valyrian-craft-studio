@@ -1,20 +1,18 @@
-# STEP 1: Build app
 FROM node:18-alpine as build
 
 WORKDIR /app
-
 COPY package*.json ./
 RUN npm install
-
 COPY . .
-
 RUN npm run build
 
 
-# STEP 2: Serve using nginx
 FROM nginx:alpine
 
 COPY --from=build /app/dist /usr/share/nginx/html
+
+# 👇 ADD THIS LINE
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 80
 
