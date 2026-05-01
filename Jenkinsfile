@@ -16,7 +16,7 @@ pipeline {
 
         stage('Clone Code') {
             steps {
-                git 'https://github.com/mdibrahim-ux/valyrian-craft-studio.git'
+                git branch: 'main', url: 'https://github.com/mdibrahim-ux/valyrian-craft-studio.git'
             }
         }
 
