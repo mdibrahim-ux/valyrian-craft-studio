@@ -4,24 +4,31 @@ pipeline {
     environment {
         IMAGE_NAME = "devops-demo"
         CONTAINER_NAME = "devops-container"
-        PORT = "80"
     }
 
     stages {
 
-        stage('Checkout Code') {
+        stage('Clean Workspace') {
             steps {
-                git branch: 'main', url: 'https://github.com/mdibrahim-ux/valyrian-craft-studio.git'
+                cleanWs()
+            }
+        }
+
+        stage('Clone Code') {
+            steps {
+                git 'https://github.com/mdibrahim-ux/valyrian-craft-studio.git'
             }
         }
 
         stage('Build Docker Image') {
             steps {
-                sh 'docker build -t $IMAGE_NAME:v1 .'
+                sh '''
+                docker build -t $IMAGE_NAME:latest .
+                '''
             }
         }
 
-        stage('Stop & Remove Old Container') {
+        stage('Stop Old Container') {
             steps {
                 sh '''
                 docker stop $CONTAINER_NAME || true
@@ -32,17 +39,28 @@ pipeline {
 
         stage('Run New Container') {
             steps {
-                sh 'docker run -d -p $PORT:8080 --name $CONTAINER_NAME $IMAGE_NAME:v1'
+                sh '''
+                docker run -d -p 80:80 --name $CONTAINER_NAME $IMAGE_NAME:latest
+                '''
+            }
+        }
+
+        stage('Verify Deployment') {
+            steps {
+                sh '''
+                sleep 5
+                curl -I http://localhost:80 || true
+                '''
             }
         }
     }
 
     post {
         success {
-            echo "✅ Deployment Successful!"
+            echo '✅ Deployment Successful!'
         }
         failure {
-            echo "❌ Deployment Failed!"
+            echo '❌ Deployment Failed!'
         }
     }
 }
