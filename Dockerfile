@@ -1,4 +1,5 @@
-FROM node:18 AS build
+# Build stage
+FROM node:18
 
 WORKDIR /app
 
@@ -6,11 +7,16 @@ COPY package*.json ./
 RUN npm install
 
 COPY . .
+
+# 🔥 FIX: increase Node memory
+ENV NODE_OPTIONS="--max-old-space-size=1024"
+
 RUN npm run build
 
+# Production stage
 FROM nginx:alpine
 
-COPY --from=build /app/build /usr/share/nginx/html
+COPY --from=0 /app/dist /usr/share/nginx/html
 
 EXPOSE 80
 
