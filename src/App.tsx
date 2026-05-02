@@ -10,6 +10,8 @@ import CatalogPage from "./pages/CatalogPage";
 import CustomizePage from "./pages/CustomizePage";
 import CartPage from "./pages/CartPage";
 import CheckoutPage from "./pages/CheckoutPage";
+import RoomAnalyzerPage from "./pages/RoomAnalyzerPage";
+import AIChatWidget from "./components/AIChatWidget";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -31,9 +33,11 @@ const App = () => (
             <Route path="/customize/:id" element={<CustomizePage />} />
             <Route path="/cart" element={<CartPage />} />
             <Route path="/checkout" element={<CheckoutPage />} />
+            <Route path="/ai-room" element={<RoomAnalyzerPage />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
 
+          <AIChatWidget />
         </HashRouter>
 
       </CartProvider>
