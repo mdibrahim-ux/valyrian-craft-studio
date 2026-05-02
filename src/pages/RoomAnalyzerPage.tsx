@@ -30,6 +30,7 @@ const RoomAnalyzerPage: React.FC = () => {
   const [notes, setNotes] = useState('');
   const [loading, setLoading] = useState(false);
   const [analysis, setAnalysis] = useState<Analysis | null>(null);
+  const [redesignedImage, setRedesignedImage] = useState<string | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
@@ -44,6 +45,7 @@ const RoomAnalyzerPage: React.FC = () => {
       setImageBase64(data);
       setImageUrl(data);
       setAnalysis(null);
+      setRedesignedImage(null);
     };
     reader.readAsDataURL(file);
   };
@@ -52,6 +54,7 @@ const RoomAnalyzerPage: React.FC = () => {
     if (!imageBase64) return;
     setLoading(true);
     setAnalysis(null);
+    setRedesignedImage(null);
     try {
       const { data, error } = await supabase.functions.invoke('analyze-room', {
         body: { imageBase64, notes },
@@ -59,7 +62,8 @@ const RoomAnalyzerPage: React.FC = () => {
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
       setAnalysis(data.analysis);
-      toast({ title: 'Analysis complete', description: 'Scroll down to see recommendations.' });
+      if (data.redesignedImage) setRedesignedImage(data.redesignedImage);
+      toast({ title: 'Redesign ready', description: 'See your room with the new furniture below.' });
     } catch (e: any) {
       console.error(e);
       toast({ title: 'Analysis failed', description: e?.message || 'Try again.', variant: 'destructive' });
@@ -128,7 +132,7 @@ const RoomAnalyzerPage: React.FC = () => {
                 variant="premium"
                 size="lg"
               >
-                {loading ? <><Loader2 size={18} className="animate-spin" /> Analyzing...</> : <><Sparkles size={18} /> Analyze Room</>}
+                {loading ? <><Loader2 size={18} className="animate-spin" /> Designing your room (~30s)...</> : <><Sparkles size={18} /> Analyze & Redesign</>}
               </Button>
               {imageUrl && !loading && (
                 <button onClick={() => fileRef.current?.click()} className="text-xs text-muted-foreground hover:text-primary transition-colors flex items-center gap-1 justify-center">
@@ -138,6 +142,29 @@ const RoomAnalyzerPage: React.FC = () => {
             </div>
           </div>
         </div>
+
+        {/* Redesigned room photo */}
+        {redesignedImage && (
+          <div className="glass-card rounded-xl p-4 mb-6 animate-fade-in">
+            <div className="flex items-center gap-2 mb-3">
+              <Sparkles size={16} className="text-primary" />
+              <h3 className="font-heading font-bold text-foreground">Your Room, Reimagined</h3>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <div>
+                <p className="text-[11px] uppercase tracking-wider text-muted-foreground mb-1.5">Before</p>
+                <img src={imageUrl!} alt="Original room" className="w-full rounded-lg border border-border/30" />
+              </div>
+              <div>
+                <p className="text-[11px] uppercase tracking-wider text-primary mb-1.5">After (AI generated)</p>
+                <img src={redesignedImage} alt="Room with recommended furniture" className="w-full rounded-lg border border-primary/40" />
+              </div>
+            </div>
+            <a href={redesignedImage} download="redesigned-room.png" className="inline-block mt-3 text-xs text-primary hover:underline">
+              Download redesigned photo →
+            </a>
+          </div>
+        )}
 
         {/* Analysis result */}
         {analysis && (
