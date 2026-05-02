@@ -12,6 +12,7 @@ const Navbar: React.FC = () => {
   const links = [
     { to: '/', label: 'Home' },
     { to: '/catalog', label: 'Catalog' },
+    { to: '/ai-room', label: 'AI Room' },
     { to: '/cart', label: 'Cart' },
   ];
 
