@@ -45,6 +45,7 @@ const RoomAnalyzerPage: React.FC = () => {
       setImageBase64(data);
       setImageUrl(data);
       setAnalysis(null);
+      setRedesignedImage(null);
     };
     reader.readAsDataURL(file);
   };
@@ -53,6 +54,7 @@ const RoomAnalyzerPage: React.FC = () => {
     if (!imageBase64) return;
     setLoading(true);
     setAnalysis(null);
+    setRedesignedImage(null);
     try {
       const { data, error } = await supabase.functions.invoke('analyze-room', {
         body: { imageBase64, notes },
@@ -60,7 +62,8 @@ const RoomAnalyzerPage: React.FC = () => {
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
       setAnalysis(data.analysis);
-      toast({ title: 'Analysis complete', description: 'Scroll down to see recommendations.' });
+      if (data.redesignedImage) setRedesignedImage(data.redesignedImage);
+      toast({ title: 'Redesign ready', description: 'See your room with the new furniture below.' });
     } catch (e: any) {
       console.error(e);
       toast({ title: 'Analysis failed', description: e?.message || 'Try again.', variant: 'destructive' });
