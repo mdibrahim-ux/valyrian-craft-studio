@@ -132,7 +132,7 @@ const RoomAnalyzerPage: React.FC = () => {
                 variant="premium"
                 size="lg"
               >
-                {loading ? <><Loader2 size={18} className="animate-spin" /> Analyzing...</> : <><Sparkles size={18} /> Analyze Room</>}
+                {loading ? <><Loader2 size={18} className="animate-spin" /> Designing your room (~30s)...</> : <><Sparkles size={18} /> Analyze & Redesign</>}
               </Button>
               {imageUrl && !loading && (
                 <button onClick={() => fileRef.current?.click()} className="text-xs text-muted-foreground hover:text-primary transition-colors flex items-center gap-1 justify-center">
