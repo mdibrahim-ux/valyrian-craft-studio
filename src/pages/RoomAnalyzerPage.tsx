@@ -143,6 +143,29 @@ const RoomAnalyzerPage: React.FC = () => {
           </div>
         </div>
 
+        {/* Redesigned room photo */}
+        {redesignedImage && (
+          <div className="glass-card rounded-xl p-4 mb-6 animate-fade-in">
+            <div className="flex items-center gap-2 mb-3">
+              <Sparkles size={16} className="text-primary" />
+              <h3 className="font-heading font-bold text-foreground">Your Room, Reimagined</h3>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <div>
+                <p className="text-[11px] uppercase tracking-wider text-muted-foreground mb-1.5">Before</p>
+                <img src={imageUrl!} alt="Original room" className="w-full rounded-lg border border-border/30" />
+              </div>
+              <div>
+                <p className="text-[11px] uppercase tracking-wider text-primary mb-1.5">After (AI generated)</p>
+                <img src={redesignedImage} alt="Room with recommended furniture" className="w-full rounded-lg border border-primary/40" />
+              </div>
+            </div>
+            <a href={redesignedImage} download="redesigned-room.png" className="inline-block mt-3 text-xs text-primary hover:underline">
+              Download redesigned photo →
+            </a>
+          </div>
+        )}
+
         {/* Analysis result */}
         {analysis && (
           <div className="space-y-6 animate-fade-in">
