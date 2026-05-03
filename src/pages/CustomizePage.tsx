@@ -6,7 +6,8 @@ import CustomizationPanel from '@/components/CustomizationPanel';
 import PreviewPanel from '@/components/PreviewPanel';
 import ProductViewer3D from '@/components/ProductViewer3D';
 import { Button } from '@/components/ui/button';
-import { ShoppingCart, ArrowLeft, Check, Box, Image, RotateCw, Pause } from 'lucide-react';
+import { ShoppingCart, ArrowLeft, Check, Box, Image, RotateCw, Pause, Sparkles } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
 import { formatINR } from '@/lib/currency';
 
@@ -184,6 +185,12 @@ const CustomizePage: React.FC = () => {
                 <><ShoppingCart size={18} /> Add to Cart — {formatINR(price)}</>
               )}
             </Button>
+
+            <Link to={`/place-in-room?product=${product.id}`} className="block">
+              <Button variant="ghost-gold" size="lg" className="w-full">
+                <Sparkles size={18} /> See it in your room
+              </Button>
+            </Link>
           </div>
 
           {/* Right: Customization */}

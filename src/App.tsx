@@ -11,6 +11,7 @@ import CustomizePage from "./pages/CustomizePage";
 import CartPage from "./pages/CartPage";
 import CheckoutPage from "./pages/CheckoutPage";
 import RoomAnalyzerPage from "./pages/RoomAnalyzerPage";
+import PlaceInRoomPage from "./pages/PlaceInRoomPage";
 import AIChatWidget from "./components/AIChatWidget";
 import NotFound from "./pages/NotFound";
 
@@ -34,6 +35,7 @@ const App = () => (
             <Route path="/cart" element={<CartPage />} />
             <Route path="/checkout" element={<CheckoutPage />} />
             <Route path="/ai-room" element={<RoomAnalyzerPage />} />
+            <Route path="/place-in-room" element={<PlaceInRoomPage />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
 

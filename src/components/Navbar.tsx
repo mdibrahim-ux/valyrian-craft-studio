@@ -13,6 +13,7 @@ const Navbar: React.FC = () => {
     { to: '/', label: 'Home' },
     { to: '/catalog', label: 'Catalog' },
     { to: '/ai-room', label: 'AI Room' },
+    { to: '/place-in-room', label: 'Place in Room' },
     { to: '/cart', label: 'Cart' },
   ];
 

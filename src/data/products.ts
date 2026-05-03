@@ -115,14 +115,14 @@ function createProducts(): Product[] {
   const products: Product[] = [];
   
   const seatingItems = [
-    { name: 'Aether Lounge Chair', base: 18999, desc: 'Sculptural comfort meets modern design', tags: ['modern', 'lounge'], featured: true },
-    { name: 'Nordic Armchair', base: 14999, desc: 'Clean Scandinavian lines with plush cushioning', tags: ['scandinavian', 'armchair'] },
-    { name: 'Titan Recliner', base: 27999, desc: 'Power recliner with memory foam and heating', tags: ['luxury', 'recliner'], featured: true },
-    { name: 'Meridian Sofa', base: 49999, desc: 'Three-seater sofa with modular configuration', tags: ['modern', 'sofa'], featured: true },
-    { name: 'Zenith Bar Stool', base: 5999, desc: 'Adjustable height with swivel base', tags: ['industrial', 'stool'] },
-    { name: 'Cascade Bench', base: 11999, desc: 'Upholstered bench with solid wood frame', tags: ['rustic', 'bench'] },
-    { name: 'Vortex Accent Chair', base: 12999, desc: 'Statement piece with curved silhouette', tags: ['vintage', 'accent'] },
-    { name: 'Nexus Sectional', base: 69999, desc: 'L-shaped modular sectional for large spaces', tags: ['modern', 'sectional'] },
+    { name: 'Aether Lounge Chair', base: 8999, desc: 'Sculptural comfort meets modern design', tags: ['modern', 'lounge'], featured: true },
+    { name: 'Nordic Armchair', base: 6999, desc: 'Clean Scandinavian lines with plush cushioning', tags: ['scandinavian', 'armchair'] },
+    { name: 'Titan Recliner', base: 13999, desc: 'Power recliner with memory foam and heating', tags: ['luxury', 'recliner'], featured: true },
+    { name: 'Meridian Sofa', base: 24999, desc: 'Three-seater sofa with modular configuration', tags: ['modern', 'sofa'], featured: true },
+    { name: 'Zenith Bar Stool', base: 2499, desc: 'Adjustable height with swivel base', tags: ['industrial', 'stool'] },
+    { name: 'Cascade Bench', base: 5499, desc: 'Upholstered bench with solid wood frame', tags: ['rustic', 'bench'] },
+    { name: 'Vortex Accent Chair', base: 5999, desc: 'Statement piece with curved silhouette', tags: ['vintage', 'accent'] },
+    { name: 'Nexus Sectional', base: 34999, desc: 'L-shaped modular sectional for large spaces', tags: ['modern', 'sectional'] },
   ];
 
   seatingItems.forEach((item, i) => {
@@ -146,13 +146,13 @@ function createProducts(): Product[] {
   });
 
   const tableItems = [
-    { name: 'Monolith Dining Table', base: 34999, desc: 'Live-edge dining table for 8', tags: ['rustic', 'dining'], featured: true },
-    { name: 'Prism Coffee Table', base: 12999, desc: 'Geometric base with tempered glass top', tags: ['modern', 'coffee'] },
-    { name: 'Apex Executive Desk', base: 28999, desc: 'Spacious desk with cable management', tags: ['office', 'desk'], featured: true },
-    { name: 'Halo Side Table', base: 6999, desc: 'Circular marble-top side table', tags: ['luxury', 'side'] },
-    { name: 'Terra Console', base: 16999, desc: 'Narrow console with storage drawers', tags: ['modern', 'console'] },
-    { name: 'Forge Workbench', base: 21999, desc: 'Industrial-style standing desk', tags: ['industrial', 'desk'] },
-    { name: 'Eclipse Nesting Tables', base: 9999, desc: 'Set of 3 nesting tables', tags: ['scandinavian', 'nesting'] },
+    { name: 'Monolith Dining Table', base: 16999, desc: 'Live-edge dining table for 8', tags: ['rustic', 'dining'], featured: true },
+    { name: 'Prism Coffee Table', base: 5999, desc: 'Geometric base with tempered glass top', tags: ['modern', 'coffee'] },
+    { name: 'Apex Executive Desk', base: 13999, desc: 'Spacious desk with cable management', tags: ['office', 'desk'], featured: true },
+    { name: 'Halo Side Table', base: 2999, desc: 'Circular marble-top side table', tags: ['luxury', 'side'] },
+    { name: 'Terra Console', base: 7999, desc: 'Narrow console with storage drawers', tags: ['modern', 'console'] },
+    { name: 'Forge Workbench', base: 10999, desc: 'Industrial-style standing desk', tags: ['industrial', 'desk'] },
+    { name: 'Eclipse Nesting Tables', base: 4499, desc: 'Set of 3 nesting tables', tags: ['scandinavian', 'nesting'] },
   ];
 
   tableItems.forEach((item, i) => {
@@ -176,11 +176,11 @@ function createProducts(): Product[] {
   });
 
   const bedItems = [
-    { name: 'Sovereign King Bed', base: 54999, desc: 'Upholstered king bed with tufted headboard', tags: ['luxury', 'king'], featured: true },
-    { name: 'Aurora Platform Bed', base: 32999, desc: 'Low-profile platform with LED ambiance', tags: ['modern', 'platform'] },
-    { name: 'Haven Canopy Bed', base: 64999, desc: 'Four-poster canopy with draping', tags: ['vintage', 'canopy'] },
-    { name: 'Drift Storage Bed', base: 39999, desc: 'Hydraulic lift storage underneath', tags: ['modern', 'storage'] },
-    { name: 'Ember Nightstand', base: 7499, desc: 'Bedside table with wireless charging', tags: ['modern', 'nightstand'] },
+    { name: 'Sovereign King Bed', base: 26999, desc: 'Upholstered king bed with tufted headboard', tags: ['luxury', 'king'], featured: true },
+    { name: 'Aurora Platform Bed', base: 15999, desc: 'Low-profile platform with LED ambiance', tags: ['modern', 'platform'] },
+    { name: 'Haven Canopy Bed', base: 31999, desc: 'Four-poster canopy with draping', tags: ['vintage', 'canopy'] },
+    { name: 'Drift Storage Bed', base: 19999, desc: 'Hydraulic lift storage underneath', tags: ['modern', 'storage'] },
+    { name: 'Ember Nightstand', base: 3499, desc: 'Bedside table with wireless charging', tags: ['modern', 'nightstand'] },
   ];
 
   bedItems.forEach((item, i) => {
@@ -204,11 +204,11 @@ function createProducts(): Product[] {
   });
 
   const storageItems = [
-    { name: 'Vault Wardrobe', base: 44999, desc: 'Triple-door wardrobe with mirror', tags: ['modern', 'wardrobe'] },
-    { name: 'Archive Bookshelf', base: 14999, desc: 'Tall bookshelf with adjustable shelves', tags: ['industrial', 'bookshelf'], featured: true },
-    { name: 'Cellar Wine Cabinet', base: 29999, desc: 'Temperature-controlled wine storage', tags: ['luxury', 'wine'] },
-    { name: 'Lattice TV Unit', base: 13999, desc: 'Entertainment center with cable routing', tags: ['modern', 'tv-unit'] },
-    { name: 'Nomad Dresser', base: 22999, desc: '6-drawer dresser with soft-close', tags: ['scandinavian', 'dresser'] },
+    { name: 'Vault Wardrobe', base: 21999, desc: 'Triple-door wardrobe with mirror', tags: ['modern', 'wardrobe'] },
+    { name: 'Archive Bookshelf', base: 6999, desc: 'Tall bookshelf with adjustable shelves', tags: ['industrial', 'bookshelf'], featured: true },
+    { name: 'Cellar Wine Cabinet', base: 14999, desc: 'Temperature-controlled wine storage', tags: ['luxury', 'wine'] },
+    { name: 'Lattice TV Unit', base: 6499, desc: 'Entertainment center with cable routing', tags: ['modern', 'tv-unit'] },
+    { name: 'Nomad Dresser', base: 10999, desc: '6-drawer dresser with soft-close', tags: ['scandinavian', 'dresser'] },
   ];
 
   storageItems.forEach((item, i) => {
@@ -232,11 +232,11 @@ function createProducts(): Product[] {
   });
 
   const officeItems = [
-    { name: 'Command Ergonomic Chair', base: 19999, desc: 'Full ergonomic with mesh back', tags: ['modern', 'ergonomic'], featured: true },
-    { name: 'Summit Standing Desk', base: 26999, desc: 'Motorized sit-stand desk', tags: ['modern', 'standing'] },
-    { name: 'Matrix Filing Cabinet', base: 9999, desc: '4-drawer lateral filing', tags: ['industrial', 'filing'] },
-    { name: 'Harbor Credenza', base: 32999, desc: 'Executive storage credenza', tags: ['luxury', 'credenza'] },
-    { name: 'Link Conference Table', base: 54999, desc: '12-person conference table', tags: ['modern', 'conference'] },
+    { name: 'Command Ergonomic Chair', base: 9499, desc: 'Full ergonomic with mesh back', tags: ['modern', 'ergonomic'], featured: true },
+    { name: 'Summit Standing Desk', base: 12999, desc: 'Motorized sit-stand desk', tags: ['modern', 'standing'] },
+    { name: 'Matrix Filing Cabinet', base: 4999, desc: '4-drawer lateral filing', tags: ['industrial', 'filing'] },
+    { name: 'Harbor Credenza', base: 15999, desc: 'Executive storage credenza', tags: ['luxury', 'credenza'] },
+    { name: 'Link Conference Table', base: 26999, desc: '12-person conference table', tags: ['modern', 'conference'] },
   ];
 
   officeItems.forEach((item, i) => {
