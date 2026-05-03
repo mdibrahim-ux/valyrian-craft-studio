@@ -192,10 +192,14 @@ function useWoodMaterial(woodType: string, finish: string, material: string) {
     if (ma.useTexture) {
       props.map = colorTex;
       props.normalMap = normalTex;
-      props.normalScale = new THREE.Vector2(0.3, 0.3);
+      props.normalScale = new THREE.Vector2(0.45, 0.45);
       props.roughnessMap = roughTex;
+      props.aoMapIntensity = 0.6;
     } else if (material === 'metal') {
-      props.color = '#888888';
+      props.color = '#9a9a9a';
+      props.roughness = 0.22;
+      props.metalness = 0.95;
+      props.envMapIntensity = 1.6;
     } else if (material === 'glass') {
       props.color = '#AADDEE';
     } else {
