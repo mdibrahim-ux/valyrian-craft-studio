@@ -1889,8 +1889,8 @@ function CredenzaModel({ config }: { config: CustomConfig }) {
 function GroundPlane() {
   return (
     <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.52, 0]} receiveShadow>
-      <planeGeometry args={[10, 10]} />
-      <meshStandardMaterial color="#111111" roughness={0.9} metalness={0} transparent opacity={0.3} />
+      <circleGeometry args={[6, 64]} />
+      <meshStandardMaterial color="#0c0c0e" roughness={0.78} metalness={0.05} />
     </mesh>
   );
 }
@@ -1903,44 +1903,91 @@ interface Props {
   rotateSpeed?: number;
 }
 
-const ProductViewer3D: React.FC<Props> = ({ config, category, subtype, autoRotate = true, rotateSpeed = 1.2 }) => {
+const ProductViewer3D: React.FC<Props> = ({ config, category, subtype, autoRotate = true, rotateSpeed = 1.0 }) => {
   return (
-    <div className="w-full aspect-[4/3] rounded-lg overflow-hidden bg-secondary/20 border border-border/30">
+    <div className="w-full aspect-[4/3] rounded-lg overflow-hidden bg-gradient-to-b from-[#0e0e12] to-[#06060a] border border-border/30 relative">
       <Canvas
-        camera={{ position: [2.2, 1.6, 2.2], fov: 38 }}
-        gl={{ antialias: true, alpha: true, toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: 1.15 }}
-        dpr={[1, 2]}
-        shadows
+        camera={{ position: [2.4, 1.7, 2.4], fov: 35 }}
+        gl={{
+          antialias: true,
+          alpha: true,
+          toneMapping: THREE.ACESFilmicToneMapping,
+          toneMappingExposure: 1.25,
+          outputColorSpace: THREE.SRGBColorSpace,
+        }}
+        dpr={[1.5, 2.5]}
+        shadows="soft"
       >
-        <color attach="background" args={['#0A0A0B']} />
-        <fog attach="fog" args={['#0A0A0B', 4, 12]} />
+        <color attach="background" args={['#08080B']} />
+        <fog attach="fog" args={['#08080B', 5, 14]} />
 
-        {/* Three-point lighting for premium showroom feel */}
-        <ambientLight intensity={0.28} />
-        <directionalLight position={[4, 8, 4]} intensity={1.3} castShadow shadow-mapSize={2048} shadow-bias={-0.0005} />
-        <directionalLight position={[-3, 5, -3]} intensity={0.4} color="#FFE8C8" />
-        {/* Rim light (cool, behind) for separation */}
-        <directionalLight position={[0, 4, -6]} intensity={0.55} color="#A8C8FF" />
-        <spotLight position={[0, 5, 0]} intensity={0.55} angle={0.6} penumbra={0.8} color="#FFF5E0" />
+        <SoftShadows size={28} samples={18} focus={0.85} />
+
+        {/* Premium showroom three-point lighting */}
+        <ambientLight intensity={0.22} />
+        {/* Key light */}
+        <directionalLight
+          position={[5, 9, 5]}
+          intensity={1.6}
+          castShadow
+          shadow-mapSize={[4096, 4096]}
+          shadow-bias={-0.0003}
+          shadow-normalBias={0.02}
+          shadow-camera-left={-4}
+          shadow-camera-right={4}
+          shadow-camera-top={4}
+          shadow-camera-bottom={-4}
+          color="#FFF4E0"
+        />
+        {/* Warm fill */}
+        <directionalLight position={[-4, 5, -2]} intensity={0.45} color="#FFD9A8" />
+        {/* Cool rim for separation */}
+        <directionalLight position={[0, 4, -7]} intensity={0.7} color="#9CC2FF" />
+        {/* Top accent spot */}
+        <spotLight
+          position={[0, 6, 1.5]}
+          intensity={0.85}
+          angle={0.55}
+          penumbra={0.95}
+          color="#FFF8EC"
+          castShadow
+          shadow-mapSize={[2048, 2048]}
+        />
+        {/* Subtle bounce from below */}
+        <pointLight position={[0, -1.5, 2]} intensity={0.18} color="#FFE4B0" />
 
         <FurnitureModel config={config} category={category} subtype={subtype} />
         <GroundPlane />
 
-        <ContactShadows position={[0, -0.51, 0]} opacity={0.55} scale={5} blur={2.5} far={2} />
-        <Environment preset="studio" />
+        <ContactShadows
+          position={[0, -0.515, 0]}
+          opacity={0.75}
+          scale={6}
+          blur={2.2}
+          far={2.5}
+          resolution={1024}
+          color="#000000"
+        />
+        <Environment preset="studio" background={false} environmentIntensity={0.85} />
         <OrbitControls
           enablePan={false}
           enableZoom={true}
           minDistance={1.2}
           maxDistance={6}
-          minPolarAngle={Math.PI * 0.1}
+          minPolarAngle={Math.PI * 0.08}
           maxPolarAngle={Math.PI * 0.55}
           autoRotate={autoRotate}
           autoRotateSpeed={rotateSpeed}
           enableDamping
           dampingFactor={0.08}
+          rotateSpeed={0.7}
         />
       </Canvas>
+      {/* Live customization indicator */}
+      <div className="absolute top-3 left-3 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-black/40 backdrop-blur-md border border-white/10 text-[10px] font-medium text-white/80">
+        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+        Live Preview · {config.woodType} · {config.finish}
+      </div>
     </div>
   );
 };
