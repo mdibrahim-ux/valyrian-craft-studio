@@ -15,7 +15,7 @@ const WOOD_PALETTES: Record<string, { base: string; dark: string; light: string;
   mahogany: { base: '#C04000', dark: '#8B2500', light: '#D45A20', grain: '#9B3200' },
 };
 
-function createWoodTexture(woodType: string, size = 512): THREE.CanvasTexture {
+function createWoodTexture(woodType: string, size = 1024): THREE.CanvasTexture {
   const canvas = document.createElement('canvas');
   canvas.width = size;
   canvas.height = size;
