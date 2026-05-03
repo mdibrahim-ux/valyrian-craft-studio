@@ -1,6 +1,6 @@
 import React, { useRef, useMemo, useEffect } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { OrbitControls, Environment, ContactShadows, RoundedBox, MeshTransmissionMaterial } from '@react-three/drei';
+import { OrbitControls, Environment, ContactShadows, RoundedBox, MeshTransmissionMaterial, AccumulativeShadows, RandomizedLight, SoftShadows, Float } from '@react-three/drei';
 import * as THREE from 'three';
 import type { CustomConfig } from '@/contexts/CartContext';
 import type { Category } from '@/data/products';
