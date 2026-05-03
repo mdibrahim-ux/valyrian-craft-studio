@@ -185,6 +185,12 @@ const CustomizePage: React.FC = () => {
                 <><ShoppingCart size={18} /> Add to Cart — {formatINR(price)}</>
               )}
             </Button>
+
+            <Link to={`/place-in-room?product=${product.id}`} className="block">
+              <Button variant="ghost-gold" size="lg" className="w-full">
+                <Sparkles size={18} /> See it in your room
+              </Button>
+            </Link>
           </div>
 
           {/* Right: Customization */}
