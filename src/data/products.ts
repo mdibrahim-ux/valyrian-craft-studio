@@ -115,14 +115,14 @@ function createProducts(): Product[] {
   const products: Product[] = [];
   
   const seatingItems = [
-    { name: 'Aether Lounge Chair', base: 18999, desc: 'Sculptural comfort meets modern design', tags: ['modern', 'lounge'], featured: true },
-    { name: 'Nordic Armchair', base: 14999, desc: 'Clean Scandinavian lines with plush cushioning', tags: ['scandinavian', 'armchair'] },
-    { name: 'Titan Recliner', base: 27999, desc: 'Power recliner with memory foam and heating', tags: ['luxury', 'recliner'], featured: true },
-    { name: 'Meridian Sofa', base: 49999, desc: 'Three-seater sofa with modular configuration', tags: ['modern', 'sofa'], featured: true },
-    { name: 'Zenith Bar Stool', base: 5999, desc: 'Adjustable height with swivel base', tags: ['industrial', 'stool'] },
-    { name: 'Cascade Bench', base: 11999, desc: 'Upholstered bench with solid wood frame', tags: ['rustic', 'bench'] },
-    { name: 'Vortex Accent Chair', base: 12999, desc: 'Statement piece with curved silhouette', tags: ['vintage', 'accent'] },
-    { name: 'Nexus Sectional', base: 69999, desc: 'L-shaped modular sectional for large spaces', tags: ['modern', 'sectional'] },
+    { name: 'Aether Lounge Chair', base: 8999, desc: 'Sculptural comfort meets modern design', tags: ['modern', 'lounge'], featured: true },
+    { name: 'Nordic Armchair', base: 6999, desc: 'Clean Scandinavian lines with plush cushioning', tags: ['scandinavian', 'armchair'] },
+    { name: 'Titan Recliner', base: 13999, desc: 'Power recliner with memory foam and heating', tags: ['luxury', 'recliner'], featured: true },
+    { name: 'Meridian Sofa', base: 24999, desc: 'Three-seater sofa with modular configuration', tags: ['modern', 'sofa'], featured: true },
+    { name: 'Zenith Bar Stool', base: 2499, desc: 'Adjustable height with swivel base', tags: ['industrial', 'stool'] },
+    { name: 'Cascade Bench', base: 5499, desc: 'Upholstered bench with solid wood frame', tags: ['rustic', 'bench'] },
+    { name: 'Vortex Accent Chair', base: 5999, desc: 'Statement piece with curved silhouette', tags: ['vintage', 'accent'] },
+    { name: 'Nexus Sectional', base: 34999, desc: 'L-shaped modular sectional for large spaces', tags: ['modern', 'sectional'] },
   ];
 
   seatingItems.forEach((item, i) => {
