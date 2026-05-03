@@ -6,7 +6,8 @@ import CustomizationPanel from '@/components/CustomizationPanel';
 import PreviewPanel from '@/components/PreviewPanel';
 import ProductViewer3D from '@/components/ProductViewer3D';
 import { Button } from '@/components/ui/button';
-import { ShoppingCart, ArrowLeft, Check, Box, Image, RotateCw, Pause } from 'lucide-react';
+import { ShoppingCart, ArrowLeft, Check, Box, Image, RotateCw, Pause, Sparkles } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
 import { formatINR } from '@/lib/currency';
 
