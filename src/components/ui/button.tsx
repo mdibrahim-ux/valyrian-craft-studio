@@ -9,8 +9,6 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-primary text-primary-foreground hover:bg-primary/90",
-        destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90",
         default: "bg-primary/90 text-primary-foreground backdrop-blur-xl border border-white/20 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.3),0_4px_16px_-4px_rgba(0,0,0,0.4)] hover:bg-primary hover:shadow-[inset_0_1px_0_0_rgba(255,255,255,0.4),0_8px_24px_-4px_hsl(var(--primary)/0.5)]",
         destructive: "bg-destructive/90 text-destructive-foreground backdrop-blur-xl border border-white/15 hover:bg-destructive",
         outline: "border border-white/15 bg-white/5 backdrop-blur-xl hover:bg-white/10 hover:border-white/25",
@@ -19,10 +17,15 @@ const buttonVariants = cva(
         link: "text-primary underline-offset-4 hover:underline",
         premium: "bg-gradient-to-br from-primary/90 via-accent/80 to-primary/90 text-primary-foreground font-semibold backdrop-blur-xl border border-white/25 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.4),0_8px_32px_-4px_hsl(var(--primary)/0.5)] hover:shadow-[inset_0_1px_0_0_rgba(255,255,255,0.5),0_12px_40px_-4px_hsl(var(--accent)/0.6)] hover:brightness-110 transition-all duration-500",
         "ghost-gold": "border border-primary/40 bg-primary/5 text-primary backdrop-blur-xl hover:bg-primary/15 hover:border-primary/60 transition-all duration-300",
-
+      },
+      size: {
+        default: "h-10 px-4 py-2",
+        sm: "h-9 rounded-md px-3",
+        lg: "h-11 rounded-md px-8",
         icon: "h-10 w-10",
       },
     },
+
     defaultVariants: {
       variant: "default",
       size: "default",
