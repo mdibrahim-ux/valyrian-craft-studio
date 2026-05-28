@@ -132,7 +132,10 @@ const FeaturedSection = () => {
       </div>
     </section>
   );
+};
+
 const CTASection = () => (
+
   <section className="py-28 relative overflow-hidden">
     <div className="absolute inset-0 pointer-events-none">
       <div className="orb orb-violet w-[500px] h-[500px] -top-40 left-1/4 opacity-40" />
