@@ -14,67 +14,90 @@ const Navbar: React.FC = () => {
     { to: '/catalog', label: 'Catalog' },
     { to: '/ai-room', label: 'AI Room' },
     { to: '/place-in-room', label: 'Place in Room' },
-    { to: '/cart', label: 'Cart' },
   ];
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 glass-card border-b border-border/30">
-      <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-        <Link to="/" className="flex items-center gap-2">
-          <span className="text-xl font-heading font-bold text-gradient-gold tracking-wider">
-            VALYRIAN CRAFT
-          </span>
-        </Link>
-
-        {/* Desktop */}
-        <div className="hidden md:flex items-center gap-8">
-          {links.map(l => (
-            <Link
-              key={l.to}
-              to={l.to}
-              className={`text-sm font-medium tracking-wide transition-colors duration-200 ${
-                location.pathname === l.to ? 'text-primary' : 'text-muted-foreground hover:text-foreground'
-              }`}
-            >
-              {l.label}
-            </Link>
-          ))}
-          <Link to="/cart" className="relative p-2 text-foreground hover:text-primary transition-colors">
-            <ShoppingCart size={20} />
-            {itemCount > 0 && (
-              <span className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-gradient-gold text-primary-foreground text-xs flex items-center justify-center font-bold">
-                {itemCount}
-              </span>
-            )}
+    <>
+      <nav className="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[calc(100%-2rem)] max-w-6xl">
+        <div className="glass-nav rounded-full px-3 sm:px-5 h-14 flex items-center justify-between animate-fade-in">
+          <Link to="/" className="flex items-center gap-2 pl-2 pr-3 group">
+            <span className="w-2 h-2 rounded-full bg-gradient-to-br from-primary to-accent shadow-[0_0_12px_hsl(var(--primary))] group-hover:scale-125 transition-transform" />
+            <span className="text-sm sm:text-base font-heading font-bold text-gradient-aurora tracking-wider">
+              VALYRIAN CRAFT
+            </span>
           </Link>
-        </div>
 
-        {/* Mobile toggle */}
-        <button className="md:hidden text-foreground" onClick={() => setMobileOpen(!mobileOpen)}>
-          {mobileOpen ? <X size={24} /> : <Menu size={24} />}
-        </button>
-      </div>
+          {/* Desktop */}
+          <div className="hidden md:flex items-center gap-1">
+            {links.map(l => {
+              const active = location.pathname === l.to;
+              return (
+                <Link
+                  key={l.to}
+                  to={l.to}
+                  className={`relative px-4 py-2 text-sm font-medium tracking-wide rounded-full transition-all duration-500 ${
+                    active
+                      ? 'text-foreground'
+                      : 'text-muted-foreground hover:text-foreground'
+                  }`}
+                >
+                  {active && (
+                    <span className="absolute inset-0 rounded-full bg-white/10 backdrop-blur-xl border border-white/20 shadow-[inset_0_1px_0_0_hsl(var(--glass-highlight))]" />
+                  )}
+                  <span className="relative z-10">{l.label}</span>
+                </Link>
+              );
+            })}
+          </div>
 
-      {/* Mobile menu */}
-      {mobileOpen && (
-        <div className="md:hidden glass-card border-t border-border/30 animate-fade-in">
-          <div className="container mx-auto px-4 py-4 flex flex-col gap-4">
-            {links.map(l => (
-              <Link
-                key={l.to}
-                to={l.to}
-                onClick={() => setMobileOpen(false)}
-                className={`text-sm font-medium ${
-                  location.pathname === l.to ? 'text-primary' : 'text-muted-foreground'
-                }`}
-              >
-                {l.label}
-              </Link>
-            ))}
+          <div className="flex items-center gap-2">
+            <Link
+              to="/cart"
+              className="relative h-10 w-10 rounded-full flex items-center justify-center text-foreground/90 hover:text-foreground bg-white/5 hover:bg-white/15 backdrop-blur-xl border border-white/15 hover:border-white/30 transition-all duration-500 hover:scale-105"
+            >
+              <ShoppingCart size={16} />
+              {itemCount > 0 && (
+                <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 rounded-full bg-gradient-to-br from-primary to-accent text-primary-foreground text-[10px] font-bold flex items-center justify-center shadow-[0_0_12px_hsl(var(--primary)/0.6)]">
+                  {itemCount}
+                </span>
+              )}
+            </Link>
+
+            <button
+              className="md:hidden h-10 w-10 rounded-full flex items-center justify-center text-foreground bg-white/5 hover:bg-white/15 backdrop-blur-xl border border-white/15 transition-all"
+              onClick={() => setMobileOpen(!mobileOpen)}
+              aria-label="Menu"
+            >
+              {mobileOpen ? <X size={16} /> : <Menu size={16} />}
+            </button>
           </div>
         </div>
-      )}
-    </nav>
+
+        {/* Mobile menu */}
+        {mobileOpen && (
+          <div className="md:hidden mt-2 glass-surface rounded-3xl animate-scale-in origin-top">
+            <div className="px-4 py-4 flex flex-col gap-1">
+              {links.map(l => (
+                <Link
+                  key={l.to}
+                  to={l.to}
+                  onClick={() => setMobileOpen(false)}
+                  className={`px-4 py-3 rounded-full text-sm font-medium transition-all ${
+                    location.pathname === l.to
+                      ? 'bg-white/10 text-foreground border border-white/20'
+                      : 'text-muted-foreground hover:bg-white/5 hover:text-foreground'
+                  }`}
+                >
+                  {l.label}
+                </Link>
+              ))}
+            </div>
+          </div>
+        )}
+      </nav>
+      {/* Spacer */}
+      <div className="h-20" />
+    </>
   );
 };
 
