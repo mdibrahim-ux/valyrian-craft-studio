@@ -132,25 +132,30 @@ const FeaturedSection = () => {
       </div>
     </section>
   );
-};
-
 const CTASection = () => (
-  <section className="py-24 relative overflow-hidden">
-    <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-primary/10" />
-    <div className="container mx-auto px-4 text-center relative z-10">
-      <h2 className="font-heading text-3xl md:text-5xl font-bold text-foreground mb-4">
-        Ready to Design Your <span className="text-gradient-gold">Masterpiece</span>?
-      </h2>
-      <p className="text-muted-foreground max-w-md mx-auto mb-8">
-        Start with any piece, customize every detail, and bring your vision to life.
-      </p>
-      <Button asChild variant="premium" size="lg">
-        <Link to="/catalog">
-          Start Creating <ArrowRight size={18} />
-        </Link>
-      </Button>
+  <section className="py-28 relative overflow-hidden">
+    <div className="absolute inset-0 pointer-events-none">
+      <div className="orb orb-violet w-[500px] h-[500px] -top-40 left-1/4 opacity-40" />
+      <div className="orb orb-blue w-[400px] h-[400px] -bottom-32 right-1/4 opacity-40" />
+    </div>
+    <div className="container mx-auto px-4 relative z-10">
+      <div className="glass-surface max-w-3xl mx-auto p-12 md:p-16 text-center animate-shine">
+        <h2 className="font-heading text-3xl md:text-5xl font-bold text-foreground mb-4">
+          Ready to Design Your <span className="text-gradient-aurora">Masterpiece</span>?
+        </h2>
+        <p className="text-muted-foreground max-w-md mx-auto mb-8">
+          Start with any piece, customize every detail, and bring your vision to life.
+        </p>
+        <Button asChild variant="premium" size="lg">
+          <Link to="/catalog">
+            Start Creating <ArrowRight size={18} />
+          </Link>
+        </Button>
+      </div>
     </div>
   </section>
+);
+
 );
 
 const Footer = () => (

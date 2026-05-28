@@ -7,11 +7,12 @@ const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
   return (
     <Link
       to={`/customize/${product.id}`}
-      className="group glass-card rounded-lg overflow-hidden hover-lift cursor-pointer"
+    <Link
+      to={`/customize/${product.id}`}
+      className="group glass-card overflow-hidden hover-lift cursor-pointer block"
     >
-      <div className="relative aspect-[4/3] overflow-hidden">
-        <img
-          src={product.image}
+      <div className="relative aspect-[4/3] overflow-hidden rounded-t-[calc(var(--radius)-1px)]">
+
           alt={product.name}
           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
           loading="lazy"
