@@ -6,37 +6,45 @@ import ProductCard from '@/components/ProductCard';
 import { Button } from '@/components/ui/button';
 
 const HeroSection = () => (
-  <section className="relative min-h-screen flex items-center overflow-hidden">
-    {/* Background */}
-    <div className="absolute inset-0">
+  <section className="relative min-h-[88vh] flex items-center overflow-hidden">
+    {/* Floating orbs */}
+    <div className="absolute inset-0 overflow-hidden pointer-events-none">
+      <div className="orb orb-blue w-[420px] h-[420px] -top-32 -left-20" />
+      <div className="orb orb-violet w-[500px] h-[500px] top-20 -right-32" />
+      <div className="orb orb-cyan w-[360px] h-[360px] bottom-0 left-1/3" />
+    </div>
+
+    {/* Background image with heavy treatment */}
+    <div className="absolute inset-0 -z-10">
       <img
         src="https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=1920&h=1080&fit=crop"
         alt="Luxury interior"
-        className="w-full h-full object-cover opacity-40"
+        className="w-full h-full object-cover opacity-25"
       />
-      <div className="absolute inset-0 bg-gradient-to-r from-background via-background/80 to-background/40" />
-      <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-background/50" />
+      <div className="absolute inset-0 bg-gradient-to-r from-background via-background/70 to-transparent" />
+      <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-background/40" />
     </div>
 
-    <div className="container mx-auto px-4 relative z-10 pt-20">
+    <div className="container mx-auto px-4 relative z-10 pt-12">
       <div className="max-w-2xl">
-        <p className="text-primary text-sm font-medium tracking-[0.3em] uppercase mb-4 animate-fade-up">
-          Next-Gen Furniture Design
-        </p>
-        <h1 className="font-heading text-5xl md:text-7xl font-bold text-foreground leading-tight mb-6 animate-fade-up" style={{ animationDelay: '0.1s' }}>
+        <div className="inline-flex items-center gap-2 glass-pill px-4 py-1.5 mb-6 animate-fade-up">
+          <span className="w-1.5 h-1.5 rounded-full bg-gradient-to-br from-primary to-accent animate-pulse" />
+          <span className="text-xs text-foreground/80 font-medium tracking-[0.2em] uppercase">Next-Gen Furniture Design</span>
+        </div>
+        <h1 className="font-heading text-5xl md:text-7xl font-bold text-foreground leading-[1.05] mb-6 animate-fade-up" style={{ animationDelay: '0.1s' }}>
           Craft Your
-          <span className="block text-gradient-gold">Perfect Space</span>
+          <span className="block text-gradient-aurora">Perfect Space</span>
         </h1>
-        <p className="text-lg text-muted-foreground mb-8 max-w-lg animate-fade-up" style={{ animationDelay: '0.2s' }}>
+        <p className="text-lg text-muted-foreground mb-10 max-w-lg animate-fade-up" style={{ animationDelay: '0.2s' }}>
           Experience furniture customization like never before. Choose materials, dimensions, and style — see changes in real-time.
         </p>
-        <div className="flex gap-4 animate-fade-up" style={{ animationDelay: '0.3s' }}>
+        <div className="flex flex-wrap gap-3 animate-fade-up" style={{ animationDelay: '0.3s' }}>
           <Button asChild variant="premium" size="lg">
             <Link to="/catalog">
               Explore Collection <ArrowRight size={18} />
             </Link>
           </Button>
-          <Button asChild variant="ghost-gold" size="lg">
+          <Button asChild variant="outline" size="lg">
             <Link to="/catalog">
               Start Customizing
             </Link>
@@ -47,6 +55,7 @@ const HeroSection = () => (
   </section>
 );
 
+
 const FeaturesBar = () => (
   <section className="border-y border-border/30 bg-card/50">
     <div className="container mx-auto px-4 py-8 grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -55,26 +64,30 @@ const FeaturesBar = () => (
         { icon: Sparkles, title: 'Real-Time Preview', desc: 'See every change instantly as you design' },
         { icon: Shield, title: 'Premium Quality', desc: 'Handcrafted with the finest materials' },
       ].map(({ icon: Icon, title, desc }) => (
-        <div key={title} className="flex items-start gap-4">
-          <div className="p-2.5 rounded-lg bg-primary/10">
-            <Icon size={20} className="text-primary" />
+const FeaturesBar = () => (
+  <section className="py-10">
+    <div className="container mx-auto px-4">
+      <div className="glass-surface rounded-3xl p-6 md:p-8 grid grid-cols-1 md:grid-cols-3 gap-6">
+        {[
+          { icon: Palette, title: 'Infinite Combinations', desc: 'Mix materials, styles and dimensions freely' },
+          { icon: Sparkles, title: 'Real-Time Preview', desc: 'See every change instantly as you design' },
+          { icon: Shield, title: 'Premium Quality', desc: 'Handcrafted with the finest materials' },
+        ].map(({ icon: Icon, title, desc }) => (
+          <div key={title} className="flex items-start gap-4 group">
+            <div className="p-3 rounded-2xl glass-pill !rounded-2xl bg-gradient-to-br from-primary/20 to-accent/10 group-hover:from-primary/30 group-hover:to-accent/20 transition-all duration-500">
+              <Icon size={20} className="text-primary" />
+            </div>
+            <div>
+              <h3 className="font-semibold text-foreground text-sm">{title}</h3>
+              <p className="text-xs text-muted-foreground mt-1">{desc}</p>
+            </div>
           </div>
-          <div>
-            <h3 className="font-semibold text-foreground text-sm">{title}</h3>
-            <p className="text-xs text-muted-foreground mt-0.5">{desc}</p>
-          </div>
-        </div>
-      ))}
+        ))}
+      </div>
     </div>
   </section>
 );
 
-const CategoriesSection = () => (
-  <section className="py-20">
-    <div className="container mx-auto px-4">
-      <h2 className="font-heading text-3xl md:text-4xl font-bold text-foreground text-center mb-3">
-        Browse by Category
-      </h2>
       <p className="text-muted-foreground text-center mb-12 max-w-md mx-auto">
         From seating to storage — every piece fully customizable
       </p>
