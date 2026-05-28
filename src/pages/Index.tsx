@@ -156,18 +156,18 @@ const CTASection = () => (
   </section>
 );
 
-);
 
 const Footer = () => (
-  <footer className="border-t border-border/30 py-12 bg-card/30">
+  <footer className="py-12 mt-12">
     <div className="container mx-auto px-4">
-      <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-        <span className="font-heading text-lg font-bold text-gradient-gold tracking-wider">VALYRIAN CRAFT</span>
+      <div className="glass-surface rounded-3xl px-8 py-6 flex flex-col md:flex-row items-center justify-between gap-4">
+        <span className="font-heading text-lg font-bold text-gradient-aurora tracking-wider">VALYRIAN CRAFT</span>
         <p className="text-xs text-muted-foreground">© 2026 Valyrian Craft. Designed for distinction.</p>
       </div>
     </div>
   </footer>
 );
+
 
 const Index: React.FC = () => {
   return (
